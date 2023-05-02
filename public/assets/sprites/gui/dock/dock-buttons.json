@@ -1,0 +1,78 @@
+{
+	"frames": [
+		{
+			"filename": "estrutura1.png",
+			"frame": {
+				"x": 1,
+				"y": 1,
+				"w": 169,
+				"h": 208
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 169,
+				"h": 208
+			},
+			"sourceSize": {
+				"w": 169,
+				"h": 208
+			}
+		},
+		{
+			"filename": "estrutura2.png",
+			"frame": {
+				"x": 172,
+				"y": 1,
+				"w": 167,
+				"h": 204
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 167,
+				"h": 204
+			},
+			"sourceSize": {
+				"w": 167,
+				"h": 204
+			}
+		},
+		{
+			"filename": "estrutura3.png",
+			"frame": {
+				"x": 172,
+				"y": 207,
+				"w": 169,
+				"h": 210
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 169,
+				"h": 210
+			},
+			"sourceSize": {
+				"w": 169,
+				"h": 210
+			}
+		}
+	],
+	"meta": {
+		"app": "http://www.codeandweb.com/texturepacker",
+		"version": "1.0",
+		"image": "spritesheet.png",
+		"format": "RGBA8888",
+		"size": {
+			"w": 342,
+			"h": 418
+		},
+		"scale": "1"
+	}
+}

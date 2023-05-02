@@ -1,0 +1,14 @@
+# System and IDE files
+Thumbs.db
+.DS_Store
+.vscode
+public/assets/outros/mario
+public/assets/outros/samuraijs
+src/models
+
+
+# Vendors
+node_modules/
+
+# Build
+dist
