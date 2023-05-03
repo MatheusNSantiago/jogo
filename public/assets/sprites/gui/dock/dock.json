@@ -1,0 +1,251 @@
+{
+	"textures": [
+		{
+			"image": "dock.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 1864,
+				"h": 212
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "blocked.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 171,
+						"h": 210
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 171,
+						"h": 210
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 171,
+						"h": 210
+					}
+				},
+				{
+					"filename": "power1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 171,
+						"h": 210
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 171,
+						"h": 210
+					},
+					"frame": {
+						"x": 174,
+						"y": 1,
+						"w": 171,
+						"h": 210
+					}
+				},
+				{
+					"filename": "power2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 171,
+						"h": 210
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 171,
+						"h": 210
+					},
+					"frame": {
+						"x": 347,
+						"y": 1,
+						"w": 171,
+						"h": 210
+					}
+				},
+				{
+					"filename": "power3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 170,
+						"h": 210
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 170,
+						"h": 210
+					},
+					"frame": {
+						"x": 520,
+						"y": 1,
+						"w": 170,
+						"h": 210
+					}
+				},
+				{
+					"filename": "archer-tower-card.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 169,
+						"h": 210
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 169,
+						"h": 210
+					},
+					"frame": {
+						"x": 692,
+						"y": 1,
+						"w": 169,
+						"h": 210
+					}
+				},
+				{
+					"filename": "castle-tower-card.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 169,
+						"h": 210
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 169,
+						"h": 210
+					},
+					"frame": {
+						"x": 863,
+						"y": 1,
+						"w": 169,
+						"h": 210
+					}
+				},
+				{
+					"filename": "knight-post-card.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 169,
+						"h": 210
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 169,
+						"h": 210
+					},
+					"frame": {
+						"x": 1034,
+						"y": 1,
+						"w": 169,
+						"h": 210
+					}
+				},
+				{
+					"filename": "empty-card2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 171,
+						"h": 209
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 171,
+						"h": 209
+					},
+					"frame": {
+						"x": 1205,
+						"y": 1,
+						"w": 171,
+						"h": 209
+					}
+				},
+				{
+					"filename": "empty-card1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 170,
+						"h": 209
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 170,
+						"h": 209
+					},
+					"frame": {
+						"x": 1378,
+						"y": 1,
+						"w": 170,
+						"h": 209
+					}
+				},
+				{
+					"filename": "empty-power.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 170,
+						"h": 209
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 170,
+						"h": 209
+					},
+					"frame": {
+						"x": 1550,
+						"y": 1,
+						"w": 170,
+						"h": 209
+					}
+				},
+				{
+					"filename": "empty-card3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 141,
+						"h": 178
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 141,
+						"h": 178
+					},
+					"frame": {
+						"x": 1722,
+						"y": 1,
+						"w": 141,
+						"h": 178
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:0dadf442cc4bbd7ac567fc598084af68:aa4b74c1a8b0198a952c870e41782b3e:5aadea45719f44da4aba099e63855538$"
+	}
+}
