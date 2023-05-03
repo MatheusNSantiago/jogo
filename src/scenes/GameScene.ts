@@ -1,5 +1,6 @@
 import { CANVAS_HEIGHT } from '../constants';
 import Enemy from '../sprites/Enemy';
+import { BlueElf } from '../sprites/Tower';
 
 class GameScene extends Phaser.Scene {
   private enemies: Enemy[] = [];
@@ -33,6 +34,12 @@ class GameScene extends Phaser.Scene {
       'assets/sprites/gui/dock/dock.png',
       'assets/sprites/gui/dock/dock.json'
     );
+
+    this.load.atlas(
+      'elves',
+      'assets/sprites/elves/elves.png',
+      'assets/sprites/elves/elves.json'
+    );
   }
 
   create() {
@@ -42,13 +49,71 @@ class GameScene extends Phaser.Scene {
     this.createHUD();
 
     this.spawnEnemy();
+
+    this.anims.create({
+      key: 'greenIdle',
+      frames: this.anims.generateFrameNames('elves', {
+        prefix: 'green_idle_',
+        start: 0,
+        end: 4,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: 'blueIdle',
+      frames: this.anims.generateFrameNames('elves', {
+        prefix: 'blue_idle_',
+        start: 0,
+        end: 4,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: 'greenAttack',
+      frames: this.anims.generateFrameNames('elves', {
+        prefix: 'green_attack_',
+        start: 0,
+        end: 5,
+      }),
+      frameRate: 10,
+    });
+    this.anims.create({
+      key: 'blueAttack',
+      frames: this.anims.generateFrameNames('elves', {
+        prefix: 'blue_attack_',
+        start: 0,
+        end: 4,
+      }),
+      frameRate: 10,
+    });
+
+    this.anims.create({
+      key: 'greenDead',
+      frames: this.anims.generateFrameNames('elves', {
+        prefix: 'green_die_',
+        start: 0,
+        end: 4,
+      }),
+      frameRate: 6,
+    });
+    this.anims.create({
+      key: 'blueDead',
+      frames: this.anims.generateFrameNames('elves', {
+        prefix: 'blue_die_',
+        start: 0,
+        end: 4,
+      }),
+      frameRate: 6,
+    });
+
+    new BlueElf(this, 500, 500).setScale(1.5);
   }
 
   spawnEnemy() {
-    const baseDelay = 1000;
-    const variableDelay = 8000;
-
-    this.time.delayedCall(baseDelay + Math.random() * variableDelay, () => {
+    this.time.delayedCall(Phaser.Math.Between(1000, 8000), () => {
       this.enemies.push(new Enemy(this));
       this.spawnEnemy();
     });
@@ -102,8 +167,8 @@ class GameScene extends Phaser.Scene {
         tower = scene.add.image(x, y, 'towers', towerFrame).setInteractive();
         scene.input.setDraggable(tower);
       });
-      button.on('drag', ({x, y}: Phaser.Input.Pointer) => {
-        tower.setPosition(x, y)
+      button.on('drag', ({ x, y }: Phaser.Input.Pointer) => {
+        tower.setPosition(x, y);
       });
     }
 
