@@ -1,13 +1,16 @@
 export default class Enemy extends Phaser.GameObjects.Sprite {
   public velocity: number;
+  // public hp: HealthBar;
   private path: Phaser.Curves.Path;
   private pathGraphic: Phaser.GameObjects.Graphics;
   private locText!: Phaser.GameObjects.Text;
   private follower: Phaser.GameObjects.PathFollower;
 
+
   constructor(scene: Phaser.Scene, velocity = 180) {
     super(scene, 0, 0, 'enemy');
     this.velocity = velocity;
+    // this.hp = new HealthBar(scene, this);
 
     const points = this.generatePath();
 
@@ -29,9 +32,9 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
         points[0].x,
         points[0].y,
         'enemy',
-        'Walking/Walking_000.png'
+        'Walking/Walking_000.png',
       )
-      .setScale(0.5).setZ(-1)
+      .setScale(0.5)
 
     this.animateFollower();
   }
@@ -90,6 +93,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
       .equals(this.follower.pathVector);
 
     this.locText?.destroy();
+    // this.hp.draw()
     if (pathCompleted) {
       this.follower.destroy();
       this.pathGraphic.destroy();
@@ -98,6 +102,8 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
     }
 
     var { x, y } = this.follower;
+    this.setPosition(x , y)
+
     this.locText = this.scene.add.text(
       x - 50,
       y - 100,
@@ -109,5 +115,57 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
         backgroundColor: 'black',
       }
     );
+  }
+}
+
+class HealthBar extends Phaser.GameObjects.Graphics{
+  enemy: Enemy;
+  value: number;
+  p: number;
+
+  constructor(scene: Phaser.Scene, enemy: Enemy) {
+    super(scene)
+    this.enemy = enemy;
+
+    this.value = 100;
+    this.p = 76 / 100;
+
+    this.draw();
+    scene.add.existing(this);
+  }
+
+  decrease(amount: number) {
+    this.value -= amount;
+
+    if (this.value < 0) {
+      this.value = 0;
+    }
+
+    this.draw();
+
+    return this.value === 0;
+  }
+
+  draw() {
+    this.setPosition(this.enemy.x - 400, this.enemy.y - 600 )
+    this.clear();
+
+    //  BG
+    this.fillStyle(0x000000);
+    this.fillRect(this.x, this.y, 80, 16);
+
+    //  Health
+    this.fillStyle(0xffffff);
+    this.fillRect(this.x + 2, this.y + 2, 76, 12);
+
+    if (this.value < 30) {
+      this.fillStyle(0xff0000);
+    } else {
+      this.fillStyle(0x00ff00);
+    }
+
+    var d = Math.floor(this.p * this.value);
+
+    this.fillRect(this.x + 2, this.y + 2, d, 12);
   }
 }
