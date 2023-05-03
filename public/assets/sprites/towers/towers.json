@@ -10,7 +10,7 @@
 			"scale": 1,
 			"frames": [
 				{
-					"filename": "Castle.png",
+					"filename": "castle.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -28,10 +28,14 @@
 						"y": 1,
 						"w": 395,
 						"h": 482
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
 					}
 				},
 				{
-					"filename": "Knight Post Back.png",
+					"filename": "knight-post-back.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -49,10 +53,14 @@
 						"y": 1,
 						"w": 240,
 						"h": 197
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
 					}
 				},
 				{
-					"filename": "Knight Post Front.png",
+					"filename": "knight-post-front.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -70,10 +78,14 @@
 						"y": 200,
 						"w": 240,
 						"h": 194
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
 					}
 				},
 				{
-					"filename": "Tribal House Front.png",
+					"filename": "tribal-house-front.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -91,10 +103,14 @@
 						"y": 1,
 						"w": 224,
 						"h": 194
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
 					}
 				},
 				{
-					"filename": "Tribal House Back.png",
+					"filename": "tribal-house-back.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -112,10 +128,14 @@
 						"y": 197,
 						"w": 213,
 						"h": 191
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
 					}
 				},
 				{
-					"filename": "Castle Tower Back.png",
+					"filename": "castle-tower-back.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -133,10 +153,14 @@
 						"y": 197,
 						"w": 161,
 						"h": 242
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
 					}
 				},
 				{
-					"filename": "Archer Tower Back.png",
+					"filename": "archer-tower-back.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -154,10 +178,14 @@
 						"y": 1,
 						"w": 146,
 						"h": 193
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
 					}
 				},
 				{
-					"filename": "Archer Tower Front.png",
+					"filename": "archer-tower-front.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -175,10 +203,14 @@
 						"y": 1,
 						"w": 146,
 						"h": 193
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
 					}
 				},
 				{
-					"filename": "Castle Tower Front.png",
+					"filename": "castle-tower-front.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -196,6 +228,10 @@
 						"y": 196,
 						"w": 161,
 						"h": 242
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
 					}
 				}
 			]
@@ -204,6 +240,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:bd04041dd209a46c21da815391936a42:271ac671f4caf1d40b726d0fb9304997:84ae74610825492ccdd391d01ed682df$"
+		"smartupdate": "$TexturePacker:SmartUpdate:a415fc40c15b7c66338ecc2902217ea9:271ac671f4caf1d40b726d0fb9304997:84ae74610825492ccdd391d01ed682df$"
 	}
 }
