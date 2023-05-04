@@ -5,6 +5,7 @@ import Tower from "../sprites/Tower";
 class GameScene extends Phaser.Scene {
   public enemies: Enemy[] = [];
   public towers: Tower[] = [];
+  private dockButtonsCount = 0;
 
   constructor() {
     super({ key: "GameScene" });
@@ -79,51 +80,44 @@ class GameScene extends Phaser.Scene {
       color: "#fff",
     });
 
-    // ╭──────────────────────────────────────────────────────────╮
-    // │                       Dock buttons                       │
-    // ╰──────────────────────────────────────────────────────────╯
+    this.addDockButton("archer-tower-card.png", "archer-tower-front.png");
+    this.addDockButton("castle-tower-card.png", "castle-tower-front.png");
+    this.addDockButton("knight-post-card.png", "knight-post-front.png");
+  }
 
-    function addDockButton(
-      scene: GameScene,
-      order: number,
-      buttonFrame: string,
-      towerFrame: string
-    ) {
-      const padding = 20 * order;
-      const dockButtonScale = 1.25;
-      const dockButtonWidth = 171 * dockButtonScale;
-      const dockButtonHeight = 210 * dockButtonScale;
+  addDockButton(buttonFrame: string, towerFrame: string) {
+    const padding = 20 * this.dockButtonsCount;
+    const dockButtonScale = 1.25;
+    const dockButtonWidth = 171 * dockButtonScale;
+    const dockButtonHeight = 210 * dockButtonScale;
 
-      const button = scene.add
-        .image(
-          50 + padding + order * dockButtonWidth,
-          CANVAS_HEIGHT - dockButtonHeight,
-          "dock",
-          buttonFrame
-        )
-        .setOrigin(0, 0)
-        .setScale(dockButtonScale)
-        .setDepth(100)
-        .setInteractive();
-      scene.input.setDraggable(button);
+    const button = this.add
+      .image(
+        50 + padding + this.dockButtonsCount * dockButtonWidth,
+        CANVAS_HEIGHT - dockButtonHeight,
+        "dock",
+        buttonFrame
+      )
+      .setOrigin(0, 0)
+      .setScale(dockButtonScale)
+      .setDepth(100)
+      .setInteractive();
+    this.input.setDraggable(button);
 
-      var tower: Phaser.GameObjects.Image;
-      button.on("dragstart", ({ x, y }: Phaser.Input.Pointer) => {
-        tower = scene.add.image(x, y, "towers", towerFrame).setInteractive();
-        scene.input.setDraggable(tower);
-      });
-      button.on("drag", ({ x, y }: Phaser.Input.Pointer) => {
-        tower.setPosition(x, y);
-      });
-      button.on("dragend", ({ x, y }: Phaser.Input.Pointer) => {
-        tower.destroy();
-        scene.towers.push(new Tower(scene, scene.enemies, towerFrame, x, y));
-      });
-    }
+    var tower: Phaser.GameObjects.Image;
+    button.on("dragstart", ({ x, y }: Phaser.Input.Pointer) => {
+      tower = this.add.image(x, y, "towers", towerFrame).setInteractive();
+      this.input.setDraggable(tower);
+    });
+    button.on("drag", ({ x, y }: Phaser.Input.Pointer) => {
+      tower.setPosition(x, y);
+    });
+    button.on("dragend", ({ x, y }: Phaser.Input.Pointer) => {
+      tower.destroy();
+      this.towers.push(new Tower(this, this.enemies, towerFrame, x, y));
+    });
 
-    addDockButton(this, 0, "archer-tower-card.png", "archer-tower-front.png");
-    addDockButton(this, 1, "castle-tower-card.png", "castle-tower-front.png");
-    addDockButton(this, 2, "knight-post-card.png", "knight-post-front.png");
+    this.dockButtonsCount++;
   }
 }
 
