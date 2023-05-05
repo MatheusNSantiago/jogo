@@ -57,7 +57,6 @@ class GameScene extends Phaser.Scene {
     const baseDelay = 1000;
     const variableDelay = 8000;
 
-    // this.enemies.push(new Enemy(this));
     this.time.delayedCall(baseDelay + Math.random() * variableDelay, () => {
       this.enemies.push(new Enemy(this));
       this.spawnEnemy();
@@ -67,9 +66,7 @@ class GameScene extends Phaser.Scene {
   update() {
     if (this.enemies.length === 30) return;
     for (var enemy of this.enemies) {
-      if (enemy.active) {
-        enemy.update();
-      }
+      if (enemy.active) enemy.update();
     }
     for (const tower of this.towers) tower.update();
   }

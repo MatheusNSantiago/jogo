@@ -1,8 +1,8 @@
 import Enemy from "./Enemy";
 
 export default class Tower extends Phaser.GameObjects.Sprite {
-  timer: Phaser.Time.TimerEvent;
   missile: any;
+  radius: number = 500;
   disabled: boolean = false;
   enemies: Enemy[];
   target?: Enemy;
@@ -17,16 +17,11 @@ export default class Tower extends Phaser.GameObjects.Sprite {
     super(scene, x, y, "towers", frame);
     this.enemies = enemies;
 
-    // this.missile = new Missile(scene, "blue-missile");
     this.missile = this.scene.add.circle(0, 0, 10, 0x0000ff, 1);
 
     scene.add.image(x, y, "towers", frame);
 
-    this.timer = scene.time.addEvent({
-      delay: 1000,
-      callback: this.fire,
-      callbackScope: this,
-    });
+    scene.add.circle(x, y, this.radius, 0x1a73e8, 0.3).setDepth(99);
   }
 
   enable() {
@@ -34,7 +29,32 @@ export default class Tower extends Phaser.GameObjects.Sprite {
   }
 
   update() {
-    this.target = this.enemies[0];
+    if (this.target) {
+      if (!this.isTargetInRange(this.target)) {
+        this.target = undefined;
+      }
+    } else {
+      for (const enemy of this.enemies) {
+        if (this.isTargetInRange(enemy)) {
+          this.target = enemy;
+          this.scene.time.addEvent({
+            delay: 1000,
+            callback: this.fire,
+            callbackScope: this,
+          });
+        }
+      }
+    }
+  }
+
+  isTargetInRange(enemy: Enemy): boolean {
+    const targetDistance = Phaser.Math.Distance.Between(
+      this.x,
+      this.y,
+      enemy.x,
+      enemy.y
+    );
+    return targetDistance <= this.radius;
   }
 
   fire() {
@@ -43,7 +63,7 @@ export default class Tower extends Phaser.GameObjects.Sprite {
 
       this.scene.add.existing(this.missile);
 
-      this.missile.setPosition(this.x + offset, this.y + 20).setVisible(true);
+      this.missile.setPosition(this.x + offset, this.y + 20);
 
       this.scene.tweens.add({
         targets: this.missile,
@@ -54,7 +74,7 @@ export default class Tower extends Phaser.GameObjects.Sprite {
         onComplete: function(tween, targets) { },
       });
 
-      this.timer = this.scene.time.addEvent({
+      this.scene.time.addEvent({
         delay: Phaser.Math.Between(1000, 3000),
         callback: this.fire,
         callbackScope: this,
@@ -62,4 +82,3 @@ export default class Tower extends Phaser.GameObjects.Sprite {
     }
   }
 }
-
