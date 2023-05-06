@@ -86,8 +86,7 @@ export default class Tower extends Phaser.GameObjects.Image {
           this.target?.hurt(this.damage);
           this.missile.setVisible(false);
           if (this.target?.isDead()) {
-            this.scene.events.emit("enemy-killed", this.target);
-
+            this.scene.events.emit("enemy-killed", this.target)
             this.target = undefined;
           }
         },

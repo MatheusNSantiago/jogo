@@ -55,8 +55,11 @@ class GameScene extends Phaser.Scene {
     this.spawnEnemy();
 
     this.events.on("enemy-killed", (enemy: Enemy) => {
-      console.log("enemy-killed");
+      // checa se a morte já foi contabilizada
+      console.log(enemy.active);
 
+      this.gold += enemy.reward;
+      this.goldText.setText(`Gold: ${this.gold}`);
     });
   }
 
