@@ -5,6 +5,9 @@ import Tower from "../sprites/Tower";
 class GameScene extends Phaser.Scene {
   public enemies: Enemy[] = [];
   public towers: Tower[] = [];
+  public gold = 100;
+
+  private goldText!: Phaser.GameObjects.Text;
   private dockButtonsCount = 0;
 
   constructor() {
@@ -49,8 +52,12 @@ class GameScene extends Phaser.Scene {
     const tileset = map.addTilesetImage("ground-tiles", "tiles");
     map.createLayer("Tile Layer 1", tileset!, 0, -220)!; // nem me pergunta pq desse -220
     this.createHUD();
-
     this.spawnEnemy();
+
+    this.events.on("enemy-killed", (enemy: Enemy) => {
+      console.log("enemy-killed");
+
+    });
   }
 
   spawnEnemy() {
@@ -58,21 +65,29 @@ class GameScene extends Phaser.Scene {
     const variableDelay = 8000;
 
     this.time.delayedCall(baseDelay + Math.random() * variableDelay, () => {
-      this.enemies.push(new Enemy(this));
+      this.enemies.push(
+        new Enemy(this, {
+          hp: 100,
+          velocity: 180,
+          reward: 20,
+        })
+      );
       this.spawnEnemy();
     });
   }
 
   update() {
     if (this.enemies.length === 30) return;
-    for (var enemy of this.enemies) {
-      if (enemy.active) enemy.update();
+    for (const enemy of this.enemies) {
+      if (enemy.active) {
+        enemy.update();
+      }
     }
     for (const tower of this.towers) tower.update();
   }
 
   createHUD() {
-    this.add.text(10, 10, "Gold: 0", {
+    this.goldText = this.add.text(10, 10, `Gold: ${this.gold}`, {
       fontSize: "64px",
       color: "#fff",
     });
@@ -101,17 +116,19 @@ class GameScene extends Phaser.Scene {
       .setInteractive();
     this.input.setDraggable(button);
 
-    var tower: Phaser.GameObjects.Image;
+    var tower: Tower;
     button.on("dragstart", ({ x, y }: Phaser.Input.Pointer) => {
-      tower = this.add.image(x, y, "towers", towerFrame).setInteractive();
+      tower = new Tower(this, this.enemies, towerFrame, x, y);
+      tower.setInteractive();
       this.input.setDraggable(tower);
     });
     button.on("drag", ({ x, y }: Phaser.Input.Pointer) => {
       tower.setPosition(x, y);
+      tower.update();
     });
     button.on("dragend", ({ x, y }: Phaser.Input.Pointer) => {
-      tower.destroy();
-      this.towers.push(new Tower(this, this.enemies, towerFrame, x, y));
+      tower.enable();
+      this.towers.push(tower);
     });
 
     this.dockButtonsCount++;

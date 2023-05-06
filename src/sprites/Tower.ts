@@ -1,9 +1,10 @@
 import Enemy from "./Enemy";
 
-export default class Tower extends Phaser.GameObjects.Sprite {
-  missile: any;
-  radius: number = 500;
-  disabled: boolean = false;
+export default class Tower extends Phaser.GameObjects.Image {
+  missile: Phaser.GameObjects.Arc;
+  radius: number;
+  radiusArc: Phaser.GameObjects.Arc;
+  damage = 20;
   enemies: Enemy[];
   target?: Enemy;
 
@@ -12,30 +13,42 @@ export default class Tower extends Phaser.GameObjects.Sprite {
     enemies: Enemy[],
     frame: string,
     x: number,
-    y: number
+    y: number,
+    radius = 500
   ) {
     super(scene, x, y, "towers", frame);
+    this.radius = radius;
     this.enemies = enemies;
+    this.setActive(false);
 
-    this.missile = this.scene.add.circle(0, 0, 10, 0x0000ff, 1);
+    this.scene.add.existing(this);
 
-    scene.add.image(x, y, "towers", frame);
+    this.missile = this.scene.add
+      .circle(0, 0, 10, 0x0000ff, 1)
+      .setVisible(false);
 
-    scene.add.circle(x, y, this.radius, 0x1a73e8, 0.3).setDepth(99);
+    this.radiusArc = this.scene.add
+      .circle(this.x, this.y, this.radius, 0x1a73e8, 0.3)
+      .setDepth(99);
   }
 
   enable() {
-    this.disabled = false;
+    this.setActive(true);
+    this.radiusArc.setVisible(false);
   }
 
   update() {
+    if (!this.active) {
+      return this.radiusArc.setPosition(this.x, this.y);
+    }
+
     if (this.target) {
       if (!this.isTargetInRange(this.target)) {
         this.target = undefined;
       }
     } else {
       for (const enemy of this.enemies) {
-        if (this.isTargetInRange(enemy)) {
+        if (!enemy.isDead() && this.isTargetInRange(enemy)) {
           this.target = enemy;
           this.scene.time.addEvent({
             delay: 1000,
@@ -54,24 +67,30 @@ export default class Tower extends Phaser.GameObjects.Sprite {
       enemy.x,
       enemy.y
     );
+
     return targetDistance <= this.radius;
   }
 
   fire() {
-    if (this.target && !this.disabled) {
-      var offset = -20;
-
+    if (this.target && !this.target.isDead()) {
       this.scene.add.existing(this.missile);
-
-      this.missile.setPosition(this.x + offset, this.y + 20);
+      this.missile.setPosition(this.x, this.y).setVisible(true);
 
       this.scene.tweens.add({
         targets: this.missile,
         x: this.target.x,
         y: this.target.y,
         ease: "Linear",
-        duration: 500,
-        onComplete: function(tween, targets) { },
+        duration: 300,
+        onComplete: () => {
+          this.target?.hurt(this.damage);
+          this.missile.setVisible(false);
+          if (this.target?.isDead()) {
+            this.scene.events.emit("enemy-killed", this.target);
+
+            this.target = undefined;
+          }
+        },
       });
 
       this.scene.time.addEvent({
