@@ -1,47 +1,56 @@
+interface EnemyConfig {
+  velocity: number;
+  hp: number;
+  reward: number;
+}
 export default class Enemy extends Phaser.GameObjects.Sprite {
   public velocity: number;
-  // public hp: HealthBar;
-  private path: Phaser.Curves.Path;
-  private pathGraphic: Phaser.GameObjects.Graphics;
-  private locText!: Phaser.GameObjects.Text;
+  public hp: HealthBar;
+  public reward: number;
+
+  public path: Phaser.Curves.Path;
+  private pathGraphic!: Phaser.GameObjects.Graphics;
   private follower: Phaser.GameObjects.PathFollower;
 
-
-  constructor(scene: Phaser.Scene, velocity = 180) {
-    super(scene, 0, 0, 'enemy');
+  constructor(scene: Phaser.Scene, { velocity, hp, reward }: EnemyConfig) {
+    super(scene, 0, 0, "enemy");
     this.velocity = velocity;
-    // this.hp = new HealthBar(scene, this);
+    this.hp = new HealthBar(scene, this, hp);
+    this.reward = reward;
 
-    const points = this.generatePath();
+    this.path = this.generatePath();
 
-    // cria o path
-    this.path = new Phaser.Curves.Path(points[0].x, points[0].y);
-    for (const { x, y } of points.slice(1)) this.path.lineTo(x, y);
-
-    this.pathGraphic = this.scene.add.graphics({
-      lineStyle: {
-        width: 2,
-        color: Phaser.Display.Color.RandomRGB(0, 200).color,
-      },
-    });
-    this.path.draw(this.pathGraphic);
-
+    // create follower
     this.follower = scene.add
       .follower(
         this.path,
-        points[0].x,
-        points[0].y,
-        'enemy',
-        'Walking/Walking_000.png',
+        this.path.startPoint.x,
+        this.path.startPoint.y,
+        "enemy",
+        "Walking/Walking_000.png"
       )
-      .setScale(0.5)
+      .setScale(0.5);
 
     this.animateFollower();
   }
 
+  hurt(damage: number) {
+    this.hp.decrease(damage);
+
+    if (this.isDead()) {
+      this.setActive(false);
+      this.follower.destroy();
+      this.hp.destroy();
+    }
+  }
+
+  isDead() {
+    return this.hp.value == 0;
+  }
+
   generatePath() {
     var noise = Phaser.Math.Between(-30, 30);
-    const points = [
+    var points = [
       { x: -50, y: 640 },
       { x: 650, y: 640 },
       { x: 650, y: 1380 },
@@ -57,30 +66,45 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
       point.y += noise;
     }
 
-    return points;
+    const path = new Phaser.Curves.Path(points[0].x, points[0].y);
+
+    for (var { x, y } of points.slice(1)) {
+      path.lineTo(x, y);
+    }
+
+    // (DEBUG) draw path
+    this.pathGraphic = this.scene.add.graphics({
+      lineStyle: {
+        width: 2,
+        color: Phaser.Display.Color.RandomRGB(0, 200).color,
+      },
+    });
+    path.draw(this.pathGraphic);
+
+    return path;
   }
 
   animateFollower() {
-    const animationExist = this.scene.anims.exists('walk');
+    const animationExist = this.scene.anims.exists("walk");
 
     if (!animationExist) {
       // cria a animação
-      const frameNames = this.anims.generateFrameNames('enemy', {
+      const frameNames = this.anims.generateFrameNames("enemy", {
         start: 0,
         end: 17,
         zeroPad: 3,
-        prefix: 'Walking/Walking_',
-        suffix: '.png',
+        prefix: "Walking/Walking_",
+        suffix: ".png",
       });
       this.scene.anims.create({
-        key: 'walk',
+        key: "walk",
         frames: frameNames,
         frameRate: 25,
         repeat: -1,
       });
     }
 
-    this.follower.anims.play('walk');
+    this.follower.anims.play("walk");
     this.follower.startFollow({
       duration: (this.path.getLength() / this.velocity) * 1000,
       repeat: 0,
@@ -92,8 +116,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
       .getEndPoint()
       .equals(this.follower.pathVector);
 
-    this.locText?.destroy();
-    // this.hp.draw()
+    this.hp.draw();
     if (pathCompleted) {
       this.follower.destroy();
       this.pathGraphic.destroy();
@@ -101,34 +124,24 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
       return;
     }
 
-    var { x, y } = this.follower;
-    this.setPosition(x , y)
-
-    this.locText = this.scene.add.text(
-      x - 50,
-      y - 100,
-      `Pos: (${Math.round(x)}, ${Math.round(y)})\nVel: ${this.velocity}`,
-      {
-        color: 'white',
-        fontSize: '24px',
-        fontFamily: 'Arial',
-        backgroundColor: 'black',
-      }
-    );
+    this.setPosition(this.follower.x, this.follower.y);
   }
 }
 
-class HealthBar extends Phaser.GameObjects.Graphics{
+class HealthBar extends Phaser.GameObjects.Graphics {
   enemy: Enemy;
+  total: number;
   value: number;
   p: number;
 
-  constructor(scene: Phaser.Scene, enemy: Enemy) {
-    super(scene)
+  constructor(scene: Phaser.Scene, enemy: Enemy, total: number) {
+    super(scene);
     this.enemy = enemy;
+    this.setDepth(1);
 
-    this.value = 100;
-    this.p = 76 / 100;
+    this.total = total;
+    this.value = total;
+    this.p = 76 / total;
 
     this.draw();
     scene.add.existing(this);
@@ -142,23 +155,23 @@ class HealthBar extends Phaser.GameObjects.Graphics{
     }
 
     this.draw();
-
-    return this.value === 0;
   }
 
   draw() {
-    this.setPosition(this.enemy.x - 400, this.enemy.y - 600 )
     this.clear();
+
+    const x = this.enemy.x - 30;
+    const y = this.enemy.y - 80;
 
     //  BG
     this.fillStyle(0x000000);
-    this.fillRect(this.x, this.y, 80, 16);
+    this.fillRect(x, y, 80, 16);
 
     //  Health
     this.fillStyle(0xffffff);
-    this.fillRect(this.x + 2, this.y + 2, 76, 12);
+    this.fillRect(x + 2, y + 2, 76, 12);
 
-    if (this.value < 30) {
+    if (this.value < this.total * 0.3) {
       this.fillStyle(0xff0000);
     } else {
       this.fillStyle(0x00ff00);
@@ -166,6 +179,6 @@ class HealthBar extends Phaser.GameObjects.Graphics{
 
     var d = Math.floor(this.p * this.value);
 
-    this.fillRect(this.x + 2, this.y + 2, d, 12);
+    this.fillRect(x + 2, y + 2, d, 12);
   }
 }
