@@ -44,6 +44,13 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
     }
   }
 
+  extractReward() {
+    const reward = this.reward;
+    this.reward = 0;
+
+    return reward;
+  }
+
   isDead() {
     return this.hp.value == 0;
   }
