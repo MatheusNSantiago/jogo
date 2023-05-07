@@ -55,10 +55,11 @@ class GameScene extends Phaser.Scene {
     this.spawnEnemy();
 
     this.events.on("enemy-killed", (enemy: Enemy) => {
-      // checa se a morte já foi contabilizada
-      console.log(enemy.active);
+      // Evita que o inimigo seja contabilizado mais de uma vez
+      // se o inimigo não tiver recompensa, quer dizer que ele já foi contabilizado
+      if (enemy.reward === 0) return;
 
-      this.gold += enemy.reward;
+      this.gold += enemy.extractReward();
       this.goldText.setText(`Gold: ${this.gold}`);
     });
   }
