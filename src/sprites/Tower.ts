@@ -30,11 +30,15 @@ export default class Tower extends Phaser.GameObjects.Image {
     this.radiusArc = this.scene.add
       .circle(this.x, this.y, this.radius, 0x1a73e8, 0.3)
       .setDepth(99);
+
+    this.on("pointerover", () => this.radiusArc.setVisible(true));
+    this.on("pointerout", () => this.radiusArc.setVisible(false));
   }
 
   enable() {
     this.setActive(true);
     this.radiusArc.setVisible(false);
+    this.input!.cursor = "pointer";
   }
 
   update() {
@@ -42,7 +46,8 @@ export default class Tower extends Phaser.GameObjects.Image {
       return this.radiusArc.setPosition(this.x, this.y);
     }
 
-    const needsToFindNewTarget = this.target === undefined || this.target.isDead();
+    const needsToFindNewTarget =
+      this.target === undefined || this.target.isDead();
     if (needsToFindNewTarget) {
       for (const enemy of this.enemies) {
         if (!enemy.isDead() && this.isTargetInRange(enemy)) {
