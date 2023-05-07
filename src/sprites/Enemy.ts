@@ -37,11 +37,15 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   hurt(damage: number) {
     this.hp.decrease(damage);
 
-    if (this.isDead()) {
-      this.setActive(false);
-      this.follower.destroy();
-      this.hp.destroy();
-    }
+    if (this.isDead()) this.dispose()
+  }
+
+  dispose() {
+    this.setActive(false);
+    this.follower.destroy();
+    this.pathGraphic.destroy();
+    this.hp.destroy();
+    this.destroy()
   }
 
   extractReward() {
@@ -125,9 +129,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
 
     this.hp.draw();
     if (pathCompleted) {
-      this.follower.destroy();
-      this.pathGraphic.destroy();
-      this.destroy(true);
+      this.dispose();
       return;
     }
 
