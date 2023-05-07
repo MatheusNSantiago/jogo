@@ -42,11 +42,8 @@ export default class Tower extends Phaser.GameObjects.Image {
       return this.radiusArc.setPosition(this.x, this.y);
     }
 
-    if (this.target) {
-      if (!this.isTargetInRange(this.target)) {
-        this.target = undefined;
-      }
-    } else {
+    const needsToFindNewTarget = this.target === undefined || this.target.isDead();
+    if (needsToFindNewTarget) {
       for (const enemy of this.enemies) {
         if (!enemy.isDead() && this.isTargetInRange(enemy)) {
           this.target = enemy;
@@ -56,6 +53,10 @@ export default class Tower extends Phaser.GameObjects.Image {
             callbackScope: this,
           });
         }
+      }
+    } else {
+      if (!this.isTargetInRange(this.target!)) {
+        this.target = undefined;
       }
     }
   }
@@ -73,7 +74,6 @@ export default class Tower extends Phaser.GameObjects.Image {
 
   fire() {
     if (this.target && !this.target.isDead()) {
-      this.scene.add.existing(this.missile);
       this.missile.setPosition(this.x, this.y).setVisible(true);
 
       this.scene.tweens.add({
@@ -86,7 +86,7 @@ export default class Tower extends Phaser.GameObjects.Image {
           this.target?.hurt(this.damage);
           this.missile.setVisible(false);
           if (this.target?.isDead()) {
-            this.scene.events.emit("enemy-killed", this.target)
+            this.scene.events.emit("enemy-killed", this.target);
             this.target = undefined;
           }
         },
