@@ -54,8 +54,6 @@ class GameScene extends Phaser.Scene {
     this.createHUD();
     this.spawnEnemy();
 
-    // this.towers.push((new Tower(this, this.enemies, "archer-tower-front.png", 450, 850)).setActive(true));
-    // this.towers.push((new Tower(this, this.enemies, "castle-tower-front.png", 800, 850)).setActive(true));
 
     this.events.on("enemy-killed", (enemy: Enemy) => {
       // Evita que o inimigo seja contabilizado mais de uma vez

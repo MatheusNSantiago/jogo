@@ -1,4 +1,4 @@
-import Enemy from "./Enemy";
+import Enemy from "./enemy";
 
 export default class Tower extends Phaser.GameObjects.Image {
   missile: Phaser.GameObjects.Arc;
