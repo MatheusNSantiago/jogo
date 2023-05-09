@@ -1,6 +1,6 @@
 import { CANVAS_HEIGHT } from "../constants";
-import Enemy from "../sprites/Enemy";
 import Tower from "../sprites/Tower";
+import Enemy from "../sprites/enemy";
 
 class GameScene extends Phaser.Scene {
   public enemies: Enemy[] = [];

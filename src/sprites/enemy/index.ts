@@ -1,3 +1,5 @@
+import HealthBar from "./HealthBar";
+
 interface EnemyConfig {
   velocity: number;
   hp: number;
@@ -13,7 +15,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   private follower: Phaser.GameObjects.PathFollower;
 
   constructor(scene: Phaser.Scene, { velocity, hp, reward }: EnemyConfig) {
-    super(scene, 0, 0, "enemy");
+    super(scene, 0, 0, 'enemy');
     this.velocity = velocity;
     this.hp = new HealthBar(scene, this, hp);
     this.reward = reward;
@@ -26,8 +28,8 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
         this.path,
         this.path.startPoint.x,
         this.path.startPoint.y,
-        "enemy",
-        "Walking/Walking_000.png"
+        'enemy',
+        'Walking/Walking_000.png'
       )
       .setScale(0.5);
 
@@ -37,15 +39,19 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   hurt(damage: number) {
     this.hp.decrease(damage);
 
-    if (this.isDead()) this.dispose()
+    if (this.isDead()) {
+      this.die()
+      this.dispose();
+
+    }
   }
 
   dispose() {
-    this.setActive(false);
-    this.follower.destroy();
-    this.pathGraphic.destroy();
-    this.hp.destroy();
-    this.destroy()
+    // this.setActive(false);
+    // this.follower.destroy();
+    // this.pathGraphic.destroy();
+    // this.hp.destroy();
+    // this.destroy();
   }
 
   extractReward() {
@@ -57,6 +63,27 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
 
   isDead() {
     return this.hp.value == 0;
+  }
+
+  die() {
+    const frameNames = this.anims.generateFrameNames('enemy', {
+      start: 0,
+      end: 14,
+      zeroPad: 3,
+      prefix: 'Dying/Dying_',
+      suffix: '.png',
+    });
+    const anim = this.scene.anims.create({
+      key: 'die',
+      frames: frameNames,
+      frameRate: 25,
+      repeat: 0,
+    });
+
+    if (anim) {
+      this.follower.anims.play(anim);
+    }
+
   }
 
   generatePath() {
@@ -96,26 +123,26 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   animateFollower() {
-    const animationExist = this.scene.anims.exists("walk");
+    const animationExist = this.scene.anims.exists('walk');
 
     if (!animationExist) {
       // cria a animação
-      const frameNames = this.anims.generateFrameNames("enemy", {
+      const frameNames = this.anims.generateFrameNames('enemy', {
         start: 0,
         end: 17,
         zeroPad: 3,
-        prefix: "Walking/Walking_",
-        suffix: ".png",
+        prefix: 'Walking/Walking_',
+        suffix: '.png',
       });
       this.scene.anims.create({
-        key: "walk",
+        key: 'walk',
         frames: frameNames,
         frameRate: 25,
         repeat: -1,
       });
     }
 
-    this.follower.anims.play("walk");
+    this.follower.anims.play('walk');
     this.follower.startFollow({
       duration: (this.path.getLength() / this.velocity) * 1000,
       repeat: 0,
@@ -137,57 +164,3 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   }
 }
 
-class HealthBar extends Phaser.GameObjects.Graphics {
-  enemy: Enemy;
-  total: number;
-  value: number;
-  p: number;
-
-  constructor(scene: Phaser.Scene, enemy: Enemy, total: number) {
-    super(scene);
-    this.enemy = enemy;
-    this.setDepth(1);
-
-    this.total = total;
-    this.value = total;
-    this.p = 76 / total;
-
-    this.draw();
-    scene.add.existing(this);
-  }
-
-  decrease(amount: number) {
-    this.value -= amount;
-
-    if (this.value < 0) {
-      this.value = 0;
-    }
-
-    this.draw();
-  }
-
-  draw() {
-    this.clear();
-
-    const x = this.enemy.x - 30;
-    const y = this.enemy.y - 80;
-
-    //  BG
-    this.fillStyle(0x000000);
-    this.fillRect(x, y, 80, 16);
-
-    //  Health
-    this.fillStyle(0xffffff);
-    this.fillRect(x + 2, y + 2, 76, 12);
-
-    if (this.value < this.total * 0.3) {
-      this.fillStyle(0xff0000);
-    } else {
-      this.fillStyle(0x00ff00);
-    }
-
-    var d = Math.floor(this.p * this.value);
-
-    this.fillRect(x + 2, y + 2, d, 12);
-  }
-}
