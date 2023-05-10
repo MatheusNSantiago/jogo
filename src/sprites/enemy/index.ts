@@ -13,7 +13,6 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   public reward: number;
 
   public path: Phaser.Curves.Path;
-  private pathGraphic!: Phaser.GameObjects.Graphics;
   private follower: Phaser.GameObjects.PathFollower;
 
   constructor(scene: Phaser.Scene, { velocity, hp, reward }: EnemyConfig) {
@@ -84,7 +83,6 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   dispose(){
     this.setActive(false);
     this.hp.destroy();
-    this.pathGraphic.destroy();
     this.follower.destroy();
     this.destroy();
   }
@@ -102,15 +100,6 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
     for (const { x, y } of points.slice(1)) {
       path.lineTo(x, y);
     }
-
-    // (DEBUG) draw path
-    this.pathGraphic = this.scene.add.graphics({
-      lineStyle: {
-        width: 2,
-        color: Phaser.Display.Color.RandomRGB(0, 200).color,
-      },
-    });
-    path.draw(this.pathGraphic);
 
     return path;
   }
