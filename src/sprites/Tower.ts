@@ -14,11 +14,13 @@ export default class Tower extends Phaser.GameObjects.Image {
     frame: string,
     x: number,
     y: number,
-    radius = 500
+    radius = 500,
+    damage = 20
   ) {
     super(scene, x, y, "towers", frame);
     this.radius = radius;
     this.enemies = enemies;
+    this.damage = damage;
     this.setActive(false);
 
     this.scene.add.existing(this);
@@ -57,6 +59,7 @@ export default class Tower extends Phaser.GameObjects.Image {
             callback: this.fire,
             callbackScope: this,
           });
+          return;
         }
       }
     } else {
@@ -98,7 +101,7 @@ export default class Tower extends Phaser.GameObjects.Image {
       });
 
       this.scene.time.addEvent({
-        delay: Phaser.Math.Between(1000, 3000),
+        delay: 1500, //,Phaser.Math.Between(1000, 3000),
         callback: this.fire,
         callbackScope: this,
       });
