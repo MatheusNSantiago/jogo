@@ -1,3 +1,5 @@
+import { PATH_LEVEL_1 } from "../../constants";
+import { cloneArray } from "../../utils";
 import HealthBar from "./HealthBar";
 
 interface EnemyConfig {
@@ -89,17 +91,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
 
   generatePath() {
     var noise = Phaser.Math.Between(-30, 30);
-    var points = [
-      { x: -50, y: 640 },
-      { x: 650, y: 640 },
-      { x: 650, y: 1380 },
-      { x: 1400, y: 1380 },
-      { x: 1400, y: 150 },
-      { x: 2400, y: 150 },
-      { x: 2400, y: 1125 },
-      { x: 2870, y: 1125 },
-    ];
-
+    var points = cloneArray(PATH_LEVEL_1)
     for (const point of points) {
       point.x += noise;
       point.y += noise;
@@ -107,7 +99,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
 
     const path = new Phaser.Curves.Path(points[0].x, points[0].y);
 
-    for (var { x, y } of points.slice(1)) {
+    for (const { x, y } of points.slice(1)) {
       path.lineTo(x, y);
     }
 
