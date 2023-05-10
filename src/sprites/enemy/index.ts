@@ -42,15 +42,6 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
     if (this.isDead()) this.die();
   }
 
-  dispose() {
-    // this.setActive(false);
-
-    // this.follower.destroy();
-    // this.pathGraphic.destroy();
-    // this.hp.destroy();
-    this.destroy();
-  }
-
   extractReward() {
     const reward = this.reward;
     this.reward = 0;
@@ -80,11 +71,20 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
         repeat: 0,
       });
     }
+    this.follower.pauseFollow();
 
     this.follower.anims.play("die");
+    this.follower.on("animationcomplete", () => {
+      this.dispose()
+    });
+  }
+
+  dispose(){
+    this.setActive(false);
     this.hp.destroy();
-    this.follower.pauseFollow()
-    this.follower.on("animationcomplete", this.dispose);
+    this.pathGraphic.destroy();
+    this.follower.destroy();
+    this.destroy();
   }
 
   generatePath() {
