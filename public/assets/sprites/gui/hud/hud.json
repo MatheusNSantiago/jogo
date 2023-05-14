@@ -1,0 +1,207 @@
+{
+  "frames": {
+    "energy.png": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 380,
+        "h": 85
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 380,
+        "h": 85
+      },
+      "sourceSize": {
+        "w": 380,
+        "h": 85
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "health.png": {
+      "frame": {
+        "x": 380,
+        "y": 0,
+        "w": 403,
+        "h": 80
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 403,
+        "h": 80
+      },
+      "sourceSize": {
+        "w": 403,
+        "h": 80
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "shield.png": {
+      "frame": {
+        "x": 783,
+        "y": 0,
+        "w": 389,
+        "h": 80
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 389,
+        "h": 80
+      },
+      "sourceSize": {
+        "w": 389,
+        "h": 80
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "gold.png": {
+      "frame": {
+        "x": 1172,
+        "y": 0,
+        "w": 246,
+        "h": 89
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 246,
+        "h": 89
+      },
+      "sourceSize": {
+        "w": 246,
+        "h": 89
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "timer.png": {
+      "frame": {
+        "x": 1418,
+        "y": 0,
+        "w": 266,
+        "h": 81
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 266,
+        "h": 81
+      },
+      "sourceSize": {
+        "w": 266,
+        "h": 81
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "energy-bar.png": {
+      "frame": {
+        "x": 1684,
+        "y": 0,
+        "w": 283,
+        "h": 34
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 283,
+        "h": 34
+      },
+      "sourceSize": {
+        "w": 283,
+        "h": 34
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "health-bar.png": {
+      "frame": {
+        "x": 1684,
+        "y": 34,
+        "w": 283,
+        "h": 34
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 283,
+        "h": 34
+      },
+      "sourceSize": {
+        "w": 283,
+        "h": 34
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "shield-bar.png": {
+      "frame": {
+        "x": 1684,
+        "y": 68,
+        "w": 283,
+        "h": 34
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 283,
+        "h": 34
+      },
+      "sourceSize": {
+        "w": 283,
+        "h": 34
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  },
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "hud.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1967,
+      "h": 102
+    },
+    "scale": 1
+  }
+}

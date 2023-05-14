@@ -32,8 +32,8 @@ class SplashScene extends Phaser.Scene {
     // hud
     this.load.atlas(
       "hud",
-      "assets/sprites/gui/dock/dock.png",
-      "assets/sprites/gui/dock/dock.json"
+      "assets/sprites/gui/hud/hud.png",
+      "assets/sprites/gui/hud/hud.json"
     );
   }
 
