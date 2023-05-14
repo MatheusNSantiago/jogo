@@ -1,53 +1,43 @@
-import { CANVAS_HEIGHT } from "../constants";
-import Tower from "../sprites/Tower";
-import Enemy from "../sprites/enemy";
+import { CANVAS_HEIGHT } from '../constants';
+import Tower from '../sprites/Tower';
+import Enemy from '../sprites/enemy';
 
 class GameScene extends Phaser.Scene {
   public enemies: Enemy[] = [];
   public towers: Tower[] = [];
   public gold = 100;
-
-  private goldText!: Phaser.GameObjects.Text;
-  private dockButtonsCount = 0;
+  public health = 60;
+  private HUD!: Hud;
 
   constructor() {
-    super({ key: "GameScene" });
+    super({ key: 'GameScene' });
   }
 
   create() {
-    const map = this.make.tilemap({ key: "level1" });
-    const tileset = map.addTilesetImage("ground-tiles", "tiles");
-    map.createLayer("Tile Layer 1", tileset!, 0, -220)!; // nem me pergunta pq desse -220
-    this.createHUD();
+    const map = this.make.tilemap({ key: 'level1' });
+    const tileset = map.addTilesetImage('ground-tiles', 'tiles');
+    map.createLayer('Tile Layer 1', tileset!, 0, -220)!; // nem me pergunta pq desse -220
+    this.HUD = new Hud(this);
     this.spawnEnemy();
 
     this.towers.push(
       new Tower(
         this,
         this.enemies,
-        "castle-tower-front.png",
+        'castle-tower-front.png',
         800,
         750,
         600,
-        40,
+        40
       ).setActive(true)
     );
-
-    // this.enemies.push(
-    //   new Enemy(this, {
-    //     hp: 100,
-    //     velocity: 180,
-    //     reward: 20,
-    //   })
-    // );
-
-    this.events.on("enemy-killed", (enemy: Enemy) => {
+    this.events.on('enemy-killed', (enemy: Enemy) => {
       // Evita que o inimigo seja contabilizado mais de uma vez
       // se o inimigo não tiver recompensa, quer dizer que ele já foi contabilizado
       if (enemy.reward === 0) return;
 
       this.gold += enemy.extractReward();
-      this.goldText.setText(`Gold: ${this.gold}`);
+      this.HUD.updateGold(this.gold);
     });
   }
 
@@ -76,52 +66,90 @@ class GameScene extends Phaser.Scene {
     }
     for (const tower of this.towers) tower.update();
   }
+}
 
-  createHUD() {
-    this.goldText = this.add.text(10, 10, `Gold: ${this.gold}`, {
-      fontSize: "64px",
-      color: "#fff",
-    });
+class Hud extends Phaser.GameObjects.Container {
+  private dockButtonsCount = 0;
+  private goldText: Phaser.GameObjects.Text;
+  private healthBar: Phaser.GameObjects.Sprite;
+  private initialHealth: number;
+  private enemies: Enemy[];
+  private towers: Tower[];
 
-    this.addDockButton("archer-tower-card.png", "archer-tower-front.png");
-    this.addDockButton("castle-tower-card.png", "castle-tower-front.png");
-    this.addDockButton("knight-post-card.png", "knight-post-front.png");
+  constructor(scene: GameScene) {
+    super(scene);
+    this.enemies = scene.enemies;
+    this.towers = scene.towers;
+    this.initialHealth = scene.health;
+
+    this.healthBar = this.makeHealthBar(10, 35);
+    this.goldText = this.makeGoldCounter(scene.gold, 20, 130);
+
+    this.addDockButton('archer-tower-card.png', 'archer-tower-front.png');
+    this.addDockButton('castle-tower-card.png', 'castle-tower-front.png');
+    this.addDockButton('knight-post-card.png', 'knight-post-front.png');
   }
 
-  addDockButton(buttonFrame: string, towerFrame: string) {
+  updateGold(gold: number) {
+    this.goldText.setText(gold.toString());
+  }
+
+  updateHealthBar(health: number) {
+    const percent = health / this.initialHealth;
+    this.healthBar.setCrop(
+      0,
+      0,
+      this.healthBar.width * percent,
+      this.healthBar.height
+    );
+  }
+
+  private makeHealthBar(x: number, y: number) {
+    this.scene.add.sprite(x, y, 'hud', 'health.png').setOrigin(0,0);
+    return this.scene.add.sprite(x + 100, y + 20.5, 'hud', 'health-bar.png').setOrigin(0,0)
+  }
+
+  private makeGoldCounter(initialGold: number, x: number, y:number) {
+    this.scene.add.sprite(x, y, 'hud', 'gold.png').setOrigin(0,0);
+    return this.scene.add.text(x + 65, y + 20, initialGold.toString(), {
+      fontSize: '44px',
+      color: '#fff',
+    });
+  }
+
+  private addDockButton(buttonFrame: string, towerFrame: string) {
     const padding = 20 * this.dockButtonsCount;
     const dockButtonScale = 1.25;
     const dockButtonWidth = 171 * dockButtonScale;
     const dockButtonHeight = 210 * dockButtonScale;
 
-    const button = this.add
+    const button = this.scene.add
       .image(
         50 + padding + this.dockButtonsCount * dockButtonWidth,
         CANVAS_HEIGHT - dockButtonHeight,
-        "dock",
+        'dock',
         buttonFrame
       )
       .setOrigin(0, 0)
       .setScale(dockButtonScale)
       .setDepth(100)
-      .setInteractive({ cursor: "grab" });
-    this.input.setDraggable(button);
+      .setInteractive({ cursor: 'grab' });
+    this.scene.input.setDraggable(button);
 
     var tower: Tower;
-    button.on("dragstart", ({ x, y }: Phaser.Input.Pointer) => {
-      tower = new Tower(this, this.enemies, towerFrame, x, y);
-      tower.setInteractive({ cursor: "grabbing" });
-      this.input.setDraggable(tower);
+    button.on('dragstart', ({ x, y }: Phaser.Input.Pointer) => {
+      tower = new Tower(this.scene, this.enemies, towerFrame, x, y);
+      tower.setInteractive({ cursor: 'grabbing' });
+      this.scene.input.setDraggable(tower);
     });
-    button.on("drag", ({ x, y }: Phaser.Input.Pointer) => {
+    button.on('drag', ({ x, y }: Phaser.Input.Pointer) => {
       tower.setPosition(x, y);
       tower.update();
     });
-    button.on("dragend", () => {
+    button.on('dragend', () => {
       tower.enable();
       this.towers.push(tower);
     });
-
     this.dockButtonsCount++;
   }
 }
