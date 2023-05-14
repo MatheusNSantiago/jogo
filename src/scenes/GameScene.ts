@@ -20,17 +20,6 @@ class GameScene extends Phaser.Scene {
     this.HUD = new Hud(this);
     this.spawnEnemy();
 
-    this.towers.push(
-      new Tower(
-        this,
-        this.enemies,
-        'castle-tower-front.png',
-        800,
-        750,
-        600,
-        40
-      ).setActive(true)
-    );
     this.events.on('enemy-killed', (enemy: Enemy) => {
       // Evita que o inimigo seja contabilizado mais de uma vez
       // se o inimigo não tiver recompensa, quer dizer que ele já foi contabilizado
@@ -38,6 +27,11 @@ class GameScene extends Phaser.Scene {
 
       this.gold += enemy.extractReward();
       this.HUD.updateGold(this.gold);
+    });
+
+    this.events.on('enemy-reached-end', (enemy: Enemy) => {
+      this.health -= enemy.damage;
+      this.HUD.updateHealthBar(this.health);
     });
   }
 
@@ -51,6 +45,7 @@ class GameScene extends Phaser.Scene {
           hp: 100,
           velocity: 180,
           reward: 20,
+          damage: 20,
         })
       );
       this.spawnEnemy();
@@ -60,9 +55,7 @@ class GameScene extends Phaser.Scene {
   update() {
     if (this.enemies.length === 30) return;
     for (const enemy of this.enemies) {
-      if (enemy.active) {
-        enemy.update();
-      }
+      if (enemy.active) enemy.update();
     }
     for (const tower of this.towers) tower.update();
   }
