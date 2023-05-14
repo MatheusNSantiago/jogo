@@ -32,6 +32,10 @@ class GameScene extends Phaser.Scene {
     this.events.on('enemy-reached-end', (enemy: Enemy) => {
       this.health -= enemy.damage;
       this.HUD.updateHealthBar(this.health);
+
+      if (this.health <= 0) {
+        this.scene.start('GameOverScene');
+      }
     });
   }
 
