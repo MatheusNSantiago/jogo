@@ -14,39 +14,6 @@ class GameScene extends Phaser.Scene {
     super({ key: "GameScene" });
   }
 
-  preload() {
-    // Map
-    this.load.image("tiles", "assets/scenes/level1.png");
-    this.load.tilemapTiledJSON("level1", "assets/scenes/level1.json");
-
-    // Enemies
-    this.load.multiatlas(
-      "enemy",
-      "assets/sprites/enemy1/enemy1.json",
-      "assets/sprites/enemy1"
-    );
-
-    // dock
-    this.load.atlas(
-      "towers",
-      "assets/sprites/towers/towers.png",
-      "assets/sprites/towers/towers.json"
-    );
-
-    // dock
-    this.load.atlas(
-      "dock",
-      "assets/sprites/gui/dock/dock.png",
-      "assets/sprites/gui/dock/dock.json"
-    );
-
-    this.load.atlas(
-      "elves",
-      "assets/sprites/elves/elves.png",
-      "assets/sprites/elves/elves.json"
-    );
-  }
-
   create() {
     const map = this.make.tilemap({ key: "level1" });
     const tileset = map.addTilesetImage("ground-tiles", "tiles");
@@ -54,6 +21,25 @@ class GameScene extends Phaser.Scene {
     this.createHUD();
     this.spawnEnemy();
 
+    this.towers.push(
+      new Tower(
+        this,
+        this.enemies,
+        "castle-tower-front.png",
+        800,
+        750,
+        600,
+        40,
+      ).setActive(true)
+    );
+
+    // this.enemies.push(
+    //   new Enemy(this, {
+    //     hp: 100,
+    //     velocity: 180,
+    //     reward: 20,
+    //   })
+    // );
 
     this.events.on("enemy-killed", (enemy: Enemy) => {
       // Evita que o inimigo seja contabilizado mais de uma vez

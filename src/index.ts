@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import GameScene from './scenes/GameScene';
 import { CANVAS_HEIGHT, CANVAS_WIDTH} from './constants';
+import SplashScene from './scenes/SplashScene';
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -13,7 +14,7 @@ const config: Phaser.Types.Core.GameConfig = {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  scene: [GameScene],
+  scene: [SplashScene, GameScene],
 };
 
 new Phaser.Game(config);
