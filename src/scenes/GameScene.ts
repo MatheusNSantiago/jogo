@@ -3,21 +3,29 @@ import Enemy from '../sprites/enemy';
 import Hud from './components/Hud';
 
 class GameScene extends Phaser.Scene {
-  public enemies: Enemy[] = [];
-  public towers: Tower[] = [];
-  public gold = 100;
-  public health = 60;
+  public enemies!: Enemy[];
+  public towers!: Tower[];
+
+  public health!: number;
+  public gold!: number;
   private HUD!: Hud;
 
   constructor() {
     super({ key: 'GameScene' });
   }
 
+  init() {
+    this.enemies = [];
+    this.towers = [];
+    this.gold = 100;
+    this.health = 60;
+    this.HUD = new Hud(this);
+  }
+
   create() {
     const map = this.make.tilemap({ key: 'level1' });
     const tileset = map.addTilesetImage('ground-tiles', 'tiles');
     map.createLayer('Tile Layer 1', tileset!, 0, -220)!; // nem me pergunta pq desse -220
-    this.HUD = new Hud(this);
     this.spawnEnemy();
 
     this.events.on('enemy-killed', (enemy: Enemy) => {
@@ -33,9 +41,7 @@ class GameScene extends Phaser.Scene {
       this.health -= enemy.damage;
       this.HUD.updateHealthBar(this.health);
 
-      if (this.health <= 0) {
-        this.scene.start('GameOverScene');
-      }
+      if (this.health <= 0) this.scene.start('GameOverScene');
     });
   }
 
@@ -57,6 +63,8 @@ class GameScene extends Phaser.Scene {
   }
 
   update() {
+    console.log(this.health);
+
     if (this.enemies.length === 30) return;
     for (const enemy of this.enemies) {
       if (enemy.active) enemy.update();
