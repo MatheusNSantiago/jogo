@@ -1,6 +1,6 @@
-import { PATH_LEVEL_1 } from "../../constants";
-import { cloneArray } from "../../utils";
-import HealthBar from "./HealthBar";
+import { PATH_LEVEL_1 } from '../../constants';
+import { cloneArray, makeAnimation } from '../../utils';
+import HealthBar from './HealthBar';
 
 export interface EnemyConfig {
   texture: string;
@@ -9,7 +9,10 @@ export interface EnemyConfig {
   reward: number;
   damage: number;
 }
+
 export default class Enemy extends Phaser.GameObjects.Sprite {
+  private id: string;
+
   public velocity: number;
   public hp: HealthBar;
   public reward: number;
@@ -20,6 +23,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
 
   constructor(scene: Phaser.Scene, config: EnemyConfig) {
     super(scene, 0, 0, config.texture);
+    this.id = config.texture;
     this.velocity = config.velocity;
     this.hp = new HealthBar(scene, this, config.hp);
     this.reward = config.reward;
@@ -33,12 +37,16 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
         this.path,
         this.path.startPoint.x,
         this.path.startPoint.y,
-        "enemy",
-        "Walking/Walking_000.png"
+        this.id,
       )
       .setScale(0.5);
 
-    this.animateFollower();
+    this.follower.startFollow({
+      duration: (this.path.getLength() / this.velocity) * 1000,
+      repeat: 0,
+    });
+
+    this.walk();
   }
 
   hurt(damage: number) {
@@ -59,41 +67,43 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   die() {
-    const animationExist = this.scene.anims.exists("die");
+    const animation = makeAnimation(this.scene, "Dying", this.id);
+    this.follower.anims.play(animation);
 
-    if (!animationExist) {
-      const frameNames = this.anims.generateFrameNames("enemy", {
-        start: 0,
-        end: 14,
-        zeroPad: 3,
-        prefix: "Dying/Dying_",
-        suffix: ".png",
-      });
-      this.scene.anims.create({
-        key: "die",
-        frames: frameNames,
-        frameRate: 25,
-        repeat: 0,
-      });
-    }
     this.follower.pauseFollow();
-
-    this.follower.anims.play("die");
-    this.follower.on("animationcomplete", () => {
-      this.dispose()
-    });
+    this.follower.on('animationcomplete', () => this.dispose());
   }
 
-  dispose(){
+  update() {
+    const pathCompleted = this.path
+      .getEndPoint()
+      .equals(this.follower.pathVector);
+
+    this.hp.draw();
+    if (pathCompleted) {
+      this.scene.events.emit('enemy-reached-end', this);
+      this.dispose();
+      return;
+    }
+
+    this.setPosition(this.follower.x, this.follower.y);
+  }
+
+  walk() {
+    const animation = makeAnimation(this.scene, "Walking", this.id, true);
+    this.follower.anims.play(animation);
+  }
+
+  dispose() {
     this.setActive(false);
-    this.hp.destroy();
     this.follower.destroy();
+    this.hp.destroy();
     this.destroy();
   }
 
   generatePath() {
     var noise = Phaser.Math.Between(-30, 30);
-    var points = cloneArray(PATH_LEVEL_1)
+    var points = cloneArray(PATH_LEVEL_1);
     for (const point of points) {
       point.x += noise;
       point.y += noise;
@@ -106,47 +116,5 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
     }
 
     return path;
-  }
-
-  animateFollower() {
-    const animationExist = this.scene.anims.exists("walk");
-
-    if (!animationExist) {
-      // cria a animação
-      const frameNames = this.anims.generateFrameNames("enemy", {
-        start: 0,
-        end: 17,
-        zeroPad: 3,
-        prefix: "Walking/Walking_",
-        suffix: ".png",
-      });
-      this.scene.anims.create({
-        key: "walk",
-        frames: frameNames,
-        frameRate: 25,
-        repeat: -1,
-      });
-    }
-
-    this.follower.anims.play("walk");
-    this.follower.startFollow({
-      duration: (this.path.getLength() / this.velocity) * 1000,
-      repeat: 0,
-    });
-  }
-
-  update() {
-    const pathCompleted = this.path
-      .getEndPoint()
-      .equals(this.follower.pathVector);
-
-    this.hp.draw();
-    if (pathCompleted) {
-      this.scene.events.emit("enemy-reached-end", this);
-      this.dispose();
-      return;
-    }
-
-    this.setPosition(this.follower.x, this.follower.y);
   }
 }
