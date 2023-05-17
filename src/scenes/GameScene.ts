@@ -1,4 +1,4 @@
-import { enemy1, enemy2, enemy3 } from '../constants';
+import { PATH_LEVEL_1, enemy1, enemy2, enemy3 } from '../constants';
 import Tower from '../sprites/Tower';
 import Enemy from '../sprites/enemy';
 import Hud from './components/Hud';
@@ -6,6 +6,7 @@ import Hud from './components/Hud';
 class GameScene extends Phaser.Scene {
   public enemies!: Enemy[];
   public towers!: Tower[];
+  public path : Phaser.Curves.Path;
 
   public health!: number;
   public gold!: number;
@@ -13,6 +14,8 @@ class GameScene extends Phaser.Scene {
 
   constructor() {
     super({ key: 'GameScene' });
+
+    this.path = this.generatePath(PATH_LEVEL_1);
   }
 
   init() {
@@ -27,7 +30,7 @@ class GameScene extends Phaser.Scene {
     const map = this.make.tilemap({ key: 'level1' });
     const tileset = map.addTilesetImage('ground-tiles', 'tiles');
     map.createLayer('Tile Layer 1', tileset!, 0, -220)!; // nem me pergunta pq desse -220
-    this.spawnEnemy();
+    // this.spawnEnemy();
 
     this.events.on('enemy-killed', (enemy: Enemy) => {
       // Evita que o inimigo seja contabilizado mais de uma vez
@@ -44,6 +47,11 @@ class GameScene extends Phaser.Scene {
 
       if (this.health <= 0) this.scene.start('GameOverScene');
     });
+
+    // ╭──────────────────────────────────────────────────────────╮
+    // │                          debug                           │
+    // ╰──────────────────────────────────────────────────────────╯
+    this.enemies.push(new Enemy(this, enemy1));
   }
 
   spawnEnemy() {
@@ -51,7 +59,9 @@ class GameScene extends Phaser.Scene {
     const variableDelay = 8000;
 
     this.time.delayedCall(baseDelay + Math.random() * variableDelay, () => {
-      this.enemies.push(new Enemy(this, Phaser.Utils.Array.GetRandom([enemy1, enemy2, enemy3])))
+      this.enemies.push(
+        new Enemy(this, Phaser.Utils.Array.GetRandom([enemy1, enemy2, enemy3]))
+      );
       this.spawnEnemy();
     });
   }
@@ -62,6 +72,13 @@ class GameScene extends Phaser.Scene {
       if (enemy.active) enemy.update();
     }
     for (const tower of this.towers) tower.update();
+  }
+
+  generatePath(points: any) {
+    const path = new Phaser.Curves.Path(points[0].x, points[0].y);
+    for (const { x, y } of points.slice(1)) path.lineTo(x, y);
+
+    return path;
   }
 }
 

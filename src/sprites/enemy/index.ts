@@ -1,4 +1,5 @@
 import { PATH_LEVEL_1 } from '../../constants';
+import GameScene from '../../scenes/GameScene';
 import { cloneArray, makeAnimation } from '../../utils';
 import HealthBar from './HealthBar';
 
@@ -11,19 +12,20 @@ export interface EnemyConfig {
 }
 
 export default class Enemy extends Phaser.GameObjects.Sprite {
-  private id: string;
+  public textureID: string;
+  public path: Phaser.Curves.Path;
 
   public velocity: number;
   public hp: HealthBar;
   public reward: number;
   public damage: number;
 
-  public path: Phaser.Curves.Path;
   private follower: Phaser.GameObjects.PathFollower;
+  declare scene: GameScene;
 
-  constructor(scene: Phaser.Scene, config: EnemyConfig) {
+  constructor(scene: GameScene, config: EnemyConfig) {
     super(scene, 0, 0, config.texture);
-    this.id = config.texture;
+    this.textureID = config.texture;
     this.velocity = config.velocity;
     this.hp = new HealthBar(scene, this, config.hp);
     this.reward = config.reward;
@@ -37,7 +39,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
         this.path,
         this.path.startPoint.x,
         this.path.startPoint.y,
-        this.id,
+        this.textureID
       )
       .setScale(0.5);
 
@@ -67,7 +69,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   die() {
-    const animation = makeAnimation(this.scene, "Dying", this.id);
+    const animation = makeAnimation(this.scene, 'Dying', this.textureID);
     this.follower.anims.play(animation);
 
     this.follower.pauseFollow();
@@ -90,7 +92,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   walk() {
-    const animation = makeAnimation(this.scene, "Walking", this.id, true);
+    const animation = makeAnimation(this.scene, 'Walking', this.textureID, true);
     this.follower.anims.play(animation);
   }
 
@@ -102,18 +104,23 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   generatePath() {
-    var noise = Phaser.Math.Between(-30, 30);
-    var points = cloneArray(PATH_LEVEL_1);
+    // var noise = Phaser.Math.Between(-30, 30);
+    var noise = 0;
+    var points = this.scene.path.getPoints(1)
+
     for (const point of points) {
       point.x += noise;
       point.y += noise;
     }
 
     const path = new Phaser.Curves.Path(points[0].x, points[0].y);
+    for (const { x, y } of points.slice(1))  path.lineTo(x, y);
 
-    for (const { x, y } of points.slice(1)) {
-      path.lineTo(x, y);
-    }
+    // show the path
+    // const graphics = this.scene.add.graphics();
+    // // graphics.lineStyle(3, 0xffffff, 1);
+    // graphics.lineStyle(170, 0xffffff, 1);
+    // path.draw(graphics);
 
     return path;
   }
