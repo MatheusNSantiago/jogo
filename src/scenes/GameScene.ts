@@ -1,3 +1,4 @@
+import { enemy1 } from '../constants';
 import Tower from '../sprites/Tower';
 import Enemy from '../sprites/enemy';
 import Hud from './components/Hud';
@@ -30,8 +31,8 @@ class GameScene extends Phaser.Scene {
 
     this.events.on('enemy-killed', (enemy: Enemy) => {
       // Evita que o inimigo seja contabilizado mais de uma vez
-      // se o inimigo não tiver recompensa, quer dizer que ele já foi contabilizado
       if (enemy.reward === 0) return;
+      // se o inimigo não tiver recompensa, quer dizer que ele já foi contabilizado
 
       this.gold += enemy.extractReward();
       this.HUD.updateGold(this.gold);
@@ -50,21 +51,12 @@ class GameScene extends Phaser.Scene {
     const variableDelay = 8000;
 
     this.time.delayedCall(baseDelay + Math.random() * variableDelay, () => {
-      this.enemies.push(
-        new Enemy(this, {
-          hp: 100,
-          velocity: 180,
-          reward: 20,
-          damage: 20,
-        })
-      );
+      this.enemies.push(new Enemy(this, enemy1));
       this.spawnEnemy();
     });
   }
 
   update() {
-    console.log(this.health);
-
     if (this.enemies.length === 30) return;
     for (const enemy of this.enemies) {
       if (enemy.active) enemy.update();

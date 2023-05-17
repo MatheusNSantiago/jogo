@@ -2,7 +2,8 @@ import { PATH_LEVEL_1 } from "../../constants";
 import { cloneArray } from "../../utils";
 import HealthBar from "./HealthBar";
 
-interface EnemyStats {
+export interface EnemyConfig {
+  texture: string;
   velocity: number;
   hp: number;
   reward: number;
@@ -17,12 +18,12 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   public path: Phaser.Curves.Path;
   private follower: Phaser.GameObjects.PathFollower;
 
-  constructor(scene: Phaser.Scene, { velocity, hp, reward, damage }: EnemyStats) {
-    super(scene, 0, 0, "enemy");
-    this.velocity = velocity;
-    this.hp = new HealthBar(scene, this, hp);
-    this.reward = reward;
-    this.damage = damage;
+  constructor(scene: Phaser.Scene, config: EnemyConfig) {
+    super(scene, 0, 0, config.texture);
+    this.velocity = config.velocity;
+    this.hp = new HealthBar(scene, this, config.hp);
+    this.reward = config.reward;
+    this.damage = config.damage;
 
     this.path = this.generatePath();
 

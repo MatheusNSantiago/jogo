@@ -1,3 +1,5 @@
+import { EnemyConfig } from './sprites/enemy';
+
 export const TILE_SIZE = 256;
 export const CANVAS_HEIGHT = TILE_SIZE * 6;
 export const CANVAS_WIDTH = TILE_SIZE * 11;
@@ -12,3 +14,11 @@ export const PATH_LEVEL_1 = [
   { x: 2400, y: 1125 },
   { x: 2870, y: 1125 },
 ];
+
+export const enemy1: EnemyConfig = {
+  texture: 'enemy1',
+  hp: 100,
+  velocity: 180,
+  reward: 20,
+  damage: 20,
+};

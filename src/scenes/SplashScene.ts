@@ -10,7 +10,7 @@ class SplashScene extends Phaser.Scene {
 
     // Enemies
     this.load.multiatlas(
-      "enemy",
+      "enemy1",
       "assets/sprites/enemy1/enemy1.json",
       "assets/sprites/enemy1"
     );
