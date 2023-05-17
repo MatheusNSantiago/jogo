@@ -6,13 +6,13 @@ export const CANVAS_WIDTH = TILE_SIZE * 11;
 
 export const PATH_LEVEL_1 = [
   { x: -50, y: 640 },
-  { x: 650, y: 640 },
-  { x: 650, y: 1380 },
-  { x: 1400, y: 1380 },
-  { x: 1400, y: 150 },
-  { x: 2400, y: 150 },
-  { x: 2400, y: 1125 },
-  { x: 2870, y: 1125 },
+  { x: 640, y: 640 },
+  { x: 640, y: 1400 },
+  { x: 1410, y: 1400 },
+  { x: 1410, y: 140 },
+  { x: 2430, y: 140 },
+  { x: 2430, y: 1150 },
+  { x: 2870, y: 1150 },
 ];
 
 export const enemy1: EnemyConfig = {
