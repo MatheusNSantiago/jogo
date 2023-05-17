@@ -1,4 +1,4 @@
-import { enemy1 } from '../constants';
+import { enemy1, enemy2, enemy3 } from '../constants';
 import Tower from '../sprites/Tower';
 import Enemy from '../sprites/enemy';
 import Hud from './components/Hud';
@@ -51,7 +51,7 @@ class GameScene extends Phaser.Scene {
     const variableDelay = 8000;
 
     this.time.delayedCall(baseDelay + Math.random() * variableDelay, () => {
-      this.enemies.push(new Enemy(this, enemy1));
+      this.enemies.push(new Enemy(this, Phaser.Utils.Array.GetRandom([enemy1, enemy2, enemy3])))
       this.spawnEnemy();
     });
   }
