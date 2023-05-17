@@ -1,5 +1,3 @@
-import Enemy from './Enemy';
-
 export default class HealthBar extends Phaser.GameObjects.Graphics {
   total: number;
   value: number;
@@ -20,6 +18,10 @@ export default class HealthBar extends Phaser.GameObjects.Graphics {
     this.value -= amount;
 
     if (this.value < 0) this.value = 0;
+  }
+
+  isZero() {
+    return this.value == 0;
   }
 
   draw(x: number, y: number) {
