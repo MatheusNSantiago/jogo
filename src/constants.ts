@@ -22,3 +22,19 @@ export const enemy1: EnemyConfig = {
   reward: 20,
   damage: 20,
 };
+
+export const enemy2: EnemyConfig = {
+  texture: 'enemy2',
+  hp: 100,
+  velocity: 180,
+  reward: 20,
+  damage: 20,
+};
+
+export const enemy3: EnemyConfig = {
+  texture: 'enemy3',
+  hp: 100,
+  velocity: 180,
+  reward: 20,
+  damage: 20,
+};
