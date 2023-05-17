@@ -4,27 +4,26 @@ export function cloneArray(array: any[]) {
 
 export function makeAnimation(
   scene: Phaser.Scene,
-  key: string,
+  action: string,
   textureID: string,
   loop = false
 ): Phaser.Animations.Animation {
+  const key = `${textureID}-${action}`;
+
   if (scene.anims.exists(key)) return scene.anims.get(key);
 
-  // async function makeAnimation(key: string) {
   const json = scene.cache.json.get(`${textureID}-json`);
-
   var frames = [];
   for (const texture of json['textures']) {
     for (const frame of texture['frames']) {
-      if (frame.filename.startsWith(key)) frames.push(frame.filename);
+      if (frame.filename.startsWith(action)) frames.push(frame.filename);
     }
   }
-
   const frameNames = scene.anims.generateFrameNames(textureID, {
     start: 0,
     end: frames.length - 1,
     zeroPad: 3,
-    prefix: `${key}/${key}_`,
+    prefix: `${action}/${action}_`,
     suffix: '.png',
   });
 
