@@ -1,6 +1,8 @@
-import Enemy from "./enemy";
+import GameScene from '../scenes/GameScene';
+import Enemy from './Enemy';
 
 export default class Tower extends Phaser.GameObjects.Image {
+  declare scene: GameScene;
   missile: Phaser.GameObjects.Arc;
   radius: number;
   radiusArc: Phaser.GameObjects.Arc;
@@ -9,17 +11,16 @@ export default class Tower extends Phaser.GameObjects.Image {
   target?: Enemy;
 
   constructor(
-    scene: Phaser.Scene,
-    enemies: Enemy[],
+    scene: GameScene,
     frame: string,
     x: number,
     y: number,
     radius = 500,
-    damage = 20,
+    damage = 20
   ) {
-    super(scene, x, y, "towers", frame);
+    super(scene, x, y, 'towers', frame);
     this.radius = radius;
-    this.enemies = enemies;
+    this.enemies = scene.enemies;
     this.damage = damage;
     this.setActive(false);
 
@@ -33,14 +34,14 @@ export default class Tower extends Phaser.GameObjects.Image {
       .circle(this.x, this.y, this.radius, 0x1a73e8, 0.3)
       .setDepth(99);
 
-    this.on("pointerover", () => this.radiusArc.setVisible(true));
-    this.on("pointerout", () => this.radiusArc.setVisible(false));
+    this.on('pointerover', () => this.radiusArc.setVisible(true));
+    this.on('pointerout', () => this.radiusArc.setVisible(false));
   }
 
   enable() {
     this.setActive(true);
     this.radiusArc.setVisible(false);
-    this.input!.cursor = "pointer";
+    this.input!.cursor = 'pointer';
   }
 
   update() {
@@ -88,13 +89,13 @@ export default class Tower extends Phaser.GameObjects.Image {
         targets: this.missile,
         x: this.target.x,
         y: this.target.y,
-        ease: "Linear",
+        ease: 'Linear',
         duration: 300,
         onComplete: () => {
           this.target?.hurt(this.damage);
           this.missile.setVisible(false);
           if (this.target?.isDead()) {
-            this.scene.events.emit("enemy-killed", this.target);
+            this.scene.events.emit('enemy-killed', this.target);
             this.target = undefined;
           }
         },
@@ -108,9 +109,47 @@ export default class Tower extends Phaser.GameObjects.Image {
     }
   }
 
-
   dispose() {
     this.destroy();
     this.radiusArc.destroy();
+  }
+
+  static dragAndDrop(scene: GameScene, button: Phaser.GameObjects.Image, frame: string) {
+    const isMouseOnTopOfPath = (x: number, y: number) => {
+      const path: Phaser.Curves.Path = scene.path;
+      const point = path.getPoints();
+      const distance = 85;
+      return point.some((p) => {
+        return Phaser.Math.Distance.Between(x, y, p.x, p.y) < distance;
+      });
+    };
+
+    var tower: Tower;
+    button.on('dragstart', ({ x, y }: Phaser.Input.Pointer) => {
+      tower = new Tower(scene, frame, x, y);
+      tower.setInteractive({ cursor: 'grabbing' });
+      scene.input.setDraggable(tower);
+    });
+    button.on('drag', ({ x, y }: Phaser.Input.Pointer) => {
+      if (isMouseOnTopOfPath(x, y)) {
+        scene.input.setDefaultCursor('not-allowed');
+      } else {
+        scene.input.setDefaultCursor('grabbing');
+      }
+
+      tower.setPosition(x, y);
+      tower.update();
+    });
+    button.on('dragend', ({ x, y }: Phaser.Input.Pointer) => {
+      scene.input.setDefaultCursor('default');
+
+      if (isMouseOnTopOfPath(x, y)) {
+        tower.dispose();
+      } else {
+        tower.enable();
+        scene.towers.push(tower);
+      }
+    });
+
   }
 }

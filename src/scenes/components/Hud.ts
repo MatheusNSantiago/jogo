@@ -1,6 +1,7 @@
-import { CANVAS_HEIGHT, PATH_LEVEL_1 } from '../../constants';
+import { CANVAS_HEIGHT  } from '../../constants';
+import Barrier from '../../sprites/Barrier';
+import Enemy from '../../sprites/Enemy';
 import Tower from '../../sprites/Tower';
-import Enemy from '../../sprites/enemy';
 import GameScene from '../GameScene';
 
 class Hud extends Phaser.GameObjects.Container {
@@ -25,9 +26,9 @@ class Hud extends Phaser.GameObjects.Container {
     this.addDockButton('archer-tower-card.png', 'archer-tower-front.png');
     this.addDockButton('castle-tower-card.png', 'castle-tower-front.png');
     this.addDockButton('knight-post-card.png', 'knight-post-front.png');
-    //
+
     // this.addDockButton('power1.png', 'knight-post-front.png');
-    // this.addDockButton('power2.png', 'knight-post-front.png');
+    this.addCoiso();
     // this.addDockButton('power3.png', 'knight-post-front.png');
   }
 
@@ -46,7 +47,7 @@ class Hud extends Phaser.GameObjects.Container {
   }
 
   private makeHealthBar(x: number, y: number) {
-    this.scene.add
+   this.scene.add
       .sprite(x, y, 'hud', 'health.png')
       .setOrigin(0, 0)
       .setDepth(100);
@@ -89,43 +90,34 @@ class Hud extends Phaser.GameObjects.Container {
       .setInteractive({ cursor: 'grab' });
     this.scene.input.setDraggable(button);
 
-    // TODO: Refatorar essa parada para [Tower]
-    const isMouseOnTopOfPath = (x: number, y: number) => {
-      const path: Phaser.Curves.Path = this.scene.path;
-      const point = path.getPoints();
-      const distance = 85;
-      return point.some((p) => {
-        return Phaser.Math.Distance.Between(x, y, p.x, p.y) < distance;
-      });
-    };
+    Tower.dragAndDrop(this.scene, button, frame);
 
-    var tower: Tower;
-    button.on('dragstart', ({ x, y }: Phaser.Input.Pointer) => {
-      tower = new Tower(this.scene, this.enemies, frame, x, y);
-      tower.setInteractive({ cursor: 'grabbing' });
-      this.scene.input.setDraggable(tower);
-    });
-    button.on('drag', ({ x, y }: Phaser.Input.Pointer) => {
-      if (isMouseOnTopOfPath(x, y)) {
-        this.scene.input.setDefaultCursor('not-allowed');
-      } else {
-        this.scene.input.setDefaultCursor('grabbing');
-      }
-
-      tower.setPosition(x, y);
-      tower.update();
-    });
-    button.on('dragend', ({ x, y }: Phaser.Input.Pointer) => {
-      this.scene.input.setDefaultCursor('default');
-
-      if (isMouseOnTopOfPath(x, y)) {
-        tower.dispose();
-      } else {
-        tower.enable();
-        this.towers.push(tower);
-      }
-    });
     this.dockButtonsCount++;
+  }
+
+
+  addCoiso() {
+    const buttonFrame = 'power2.png';
+
+    const padding = 20 * this.dockButtonsCount;
+    const dockButtonScale = 1.25;
+    const dockButtonWidth = 171 * dockButtonScale;
+    const dockButtonHeight = 210 * dockButtonScale;
+
+    const button = this.scene.add
+      .image(
+        50 + padding + this.dockButtonsCount * dockButtonWidth,
+        CANVAS_HEIGHT - dockButtonHeight,
+        'dock',
+        buttonFrame
+      )
+      .setOrigin(0, 0)
+      .setScale(dockButtonScale)
+      .setDepth(100)
+      .setInteractive({ cursor: 'grab' });
+    this.scene.input.setDraggable(button);
+
+    Barrier.dragAndDrop(this.scene, button)
   }
 }
 
