@@ -10,9 +10,15 @@ export interface EnemyConfig {
   damage: number;
 }
 
+type EnemyState = 'walking' | 'attacking' | 'dying' | 'dead';
+
 export default class Enemy extends Phaser.GameObjects.Sprite {
+  declare scene: GameScene;
+  declare state: EnemyState;
+
   public textureID: string;
   public path: Phaser.Curves.Path;
+  // public state: EnemyState;
 
   public velocity: number;
   public hp: HealthBar;
@@ -20,7 +26,6 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   public damage: number;
 
   private follower: Phaser.GameObjects.PathFollower;
-  declare scene: GameScene;
 
   constructor(scene: GameScene, config: EnemyConfig) {
     super(scene, 0, 0, config.texture);
@@ -67,18 +72,29 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
     return this.hp.value == 0;
   }
 
-  die() {
-    const animation = makeAnimation(this.scene, 'Dying', this.textureID);
-    this.follower.anims.play(animation);
-
-    this.follower.pauseFollow();
-    this.follower.on('animationcomplete', () => this.dispose());
-  }
+  graphics = this.scene.add.graphics();
 
   update() {
     const pathCompleted = this.path
       .getEndPoint()
       .equals(this.follower.pathVector);
+
+    const barrier = this.scene.barrier;
+
+    if (
+      barrier &&
+      Phaser.Geom.Intersects.RectangleToRectangle(
+        this.follower.getBounds(),
+        barrier.getBounds()
+      )
+    ) {
+      this.attack();
+    }
+
+    // draw enemy bounds
+    this.graphics.clear();
+    this.graphics.lineStyle(1, 0xffffff, 1);
+    this.graphics.strokeRectShape(this.follower.getBounds());
 
     this.hp.draw(this.x, this.y);
     if (pathCompleted) {
@@ -91,8 +107,41 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   walk() {
-    const animation = makeAnimation(this.scene, 'Walking', this.textureID, true);
+    if (this.state == 'walking') return;
+    const animation = makeAnimation(
+      this.scene,
+      'Walking',
+      this.textureID,
+      true
+    );
     this.follower.anims.play(animation);
+    this.state = 'walking';
+  }
+
+  attack() {
+    if (this.state == 'attacking') return;
+    const animation = makeAnimation(
+      this.scene,
+      'Attacking',
+      this.textureID,
+      true
+    );
+    this.follower.anims.play(animation);
+    this.follower.pauseFollow();
+    this.state = 'attacking';
+  }
+
+  die() {
+    if (this.state == 'dying') return;
+    const animation = makeAnimation(this.scene, 'Dying', this.textureID);
+    this.follower.anims.play(animation);
+    this.state = 'dying';
+
+    this.follower.pauseFollow();
+    this.follower.on('animationcomplete', () => {
+      this.state = 'dead';
+      this.dispose();
+    });
   }
 
   dispose() {
@@ -103,9 +152,8 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   generatePath() {
-    // var noise = Phaser.Math.Between(-30, 30);
-    var noise = 0;
-    var points = this.scene.path.getPoints(1)
+    var noise = Phaser.Math.Between(-30, 30);
+    var points = this.scene.path.getPoints(1);
 
     for (const point of points) {
       point.x += noise;
@@ -113,13 +161,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
     }
 
     const path = new Phaser.Curves.Path(points[0].x, points[0].y);
-    for (const { x, y } of points.slice(1))  path.lineTo(x, y);
-
-    // show the path
-    // const graphics = this.scene.add.graphics();
-    // // graphics.lineStyle(3, 0xffffff, 1);
-    // graphics.lineStyle(170, 0xffffff, 1);
-    // path.draw(graphics);
+    for (const { x, y } of points.slice(1)) path.lineTo(x, y);
 
     return path;
   }
