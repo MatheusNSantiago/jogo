@@ -2,8 +2,8 @@
 Thumbs.db
 .DS_Store
 .vscode
-public/assets/outros/mario
-public/assets/outros/samuraijs
+src/assets/outros/mario
+src/assets/outros/samuraijs
 src/models
 
 
