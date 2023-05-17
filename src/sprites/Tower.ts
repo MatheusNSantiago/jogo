@@ -15,7 +15,7 @@ export default class Tower extends Phaser.GameObjects.Image {
     x: number,
     y: number,
     radius = 500,
-    damage = 20
+    damage = 20,
   ) {
     super(scene, x, y, "towers", frame);
     this.radius = radius;
@@ -106,5 +106,11 @@ export default class Tower extends Phaser.GameObjects.Image {
         callbackScope: this,
       });
     }
+  }
+
+
+  dispose() {
+    this.destroy();
+    this.radiusArc.destroy();
   }
 }
