@@ -1,39 +1,32 @@
-import Enemy from ".";
+import Enemy from './Enemy';
 
 export default class HealthBar extends Phaser.GameObjects.Graphics {
-  enemy: Enemy;
   total: number;
   value: number;
   p: number;
 
-  constructor(scene: Phaser.Scene, enemy: Enemy, total: number) {
+  constructor(scene: Phaser.Scene, total: number) {
     super(scene);
-    this.enemy = enemy;
     this.setDepth(1);
 
     this.total = total;
     this.value = total;
     this.p = 76 / total;
 
-    this.draw();
     scene.add.existing(this);
   }
 
   decrease(amount: number) {
     this.value -= amount;
 
-    if (this.value < 0) {
-      this.value = 0;
-    }
-
-    this.draw();
+    if (this.value < 0) this.value = 0;
   }
 
-  draw() {
+  draw(x: number, y: number) {
     this.clear();
 
-    const x = this.enemy.x - 30;
-    const y = this.enemy.y - 80;
+    var x = x - 30;
+    var y = y - 80;
 
     //  BG
     this.fillStyle(0x000000);

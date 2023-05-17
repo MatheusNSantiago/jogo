@@ -1,6 +1,5 @@
-import { PATH_LEVEL_1 } from '../../constants';
-import GameScene from '../../scenes/GameScene';
-import { cloneArray, makeAnimation } from '../../utils';
+import GameScene from '../scenes/GameScene';
+import { makeAnimation } from '../utils';
 import HealthBar from './HealthBar';
 
 export interface EnemyConfig {
@@ -27,7 +26,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
     super(scene, 0, 0, config.texture);
     this.textureID = config.texture;
     this.velocity = config.velocity;
-    this.hp = new HealthBar(scene, this, config.hp);
+    this.hp = new HealthBar(scene, config.hp);
     this.reward = config.reward;
     this.damage = config.damage;
 
@@ -81,7 +80,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
       .getEndPoint()
       .equals(this.follower.pathVector);
 
-    this.hp.draw();
+    this.hp.draw(this.x, this.y);
     if (pathCompleted) {
       this.scene.events.emit('enemy-reached-end', this);
       this.dispose();
