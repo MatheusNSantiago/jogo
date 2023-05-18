@@ -1,5 +1,5 @@
 import GameScene from '../scenes/GameScene';
-import { makeAnimation } from '../utils';
+import { useAnimation } from '../utils';
 import Barrier from './Barrier';
 import HealthBar from './HealthBar';
 
@@ -9,6 +9,7 @@ export interface EnemyConfig {
   hp: number;
   reward: number;
   damage: number;
+  attackSpeed: number;
 }
 
 export default class Enemy extends Phaser.GameObjects.Sprite {
@@ -22,6 +23,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   hp: HealthBar;
   reward: number;
   damage: number;
+  attackSpeed: number;
 
   follower: Phaser.GameObjects.PathFollower;
   target?: Barrier;
@@ -33,6 +35,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
     this.hp = new HealthBar(scene, config.hp);
     this.reward = config.reward;
     this.damage = config.damage;
+    this.attackSpeed = config.attackSpeed;
 
     this.path = this.generatePath();
 
@@ -94,12 +97,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   walk() {
     if (this.state == 'walking') return;
     this.follower.resumeFollow();
-    const animation = makeAnimation(
-      this.scene,
-      'Walking',
-      this.textureID,
-      true
-    );
+    const animation = useAnimation(this.scene, 'Walking', this.textureID);
     this.follower.anims.play(animation);
     this.state = 'walking';
   }
@@ -109,35 +107,34 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
 
     // Começar animação de ataque
     if (this.state !== 'attacking') {
-      const animation = makeAnimation(
-        this.scene,
-        'Attacking',
-        this.textureID,
-        true
-      );
+      const animation = useAnimation(this.scene, 'Attacking', this.textureID, {
+        frameRate: 18 * this.attackSpeed,
+      });
       this.follower.anims.play(animation);
       this.follower.pauseFollow();
       this.state = 'attacking';
     }
 
-    this.target.hurt(this.damage);
-
     if (this.target.hp.isZero()) {
       this.target = undefined;
-
       this.walk();
     }
 
     this.scene.time.addEvent({
-      delay: 1000,
-      callback: this.attack,
+      delay: 700 * 1/this.attackSpeed,
+      callback: () => {
+        this.target?.hurt(this.damage);
+        this.attack();
+      },
       callbackScope: this,
     });
   }
 
   die() {
     if (this.state == 'dying') return;
-    const animation = makeAnimation(this.scene, 'Dying', this.textureID);
+    const animation = useAnimation(this.scene, 'Dying', this.textureID, {
+      loop: false,
+    });
     this.follower.anims.play(animation);
     this.state = 'dying';
 

@@ -22,6 +22,7 @@ export const enemy1: EnemyConfig = {
   velocity: 180,
   reward: 20,
   damage: 20,
+  attackSpeed: 1,
 };
 
 export const enemy2: EnemyConfig = {
@@ -30,6 +31,7 @@ export const enemy2: EnemyConfig = {
   velocity: 180,
   reward: 20,
   damage: 20,
+  attackSpeed: 1,
 };
 
 export const enemy3: EnemyConfig = {
@@ -38,4 +40,5 @@ export const enemy3: EnemyConfig = {
   velocity: 180,
   reward: 20,
   damage: 20,
+  attackSpeed: 1,
 };
