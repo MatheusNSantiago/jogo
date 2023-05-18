@@ -2,11 +2,11 @@ export function cloneArray(array: any[]) {
   return array.map((item) => ({ ...item }));
 }
 
-export function makeAnimation(
+export function useAnimation(
   scene: Phaser.Scene,
   action: string,
   textureID: string,
-  loop = false
+  opts: { loop?: boolean; frameRate?: number } = {}
 ): Phaser.Animations.Animation {
   const key = `${textureID}-${action}`;
 
@@ -30,8 +30,8 @@ export function makeAnimation(
   const animation = scene.anims.create({
     key: key,
     frames: frameNames,
-    frameRate: 25,
-    repeat: loop ? -1 : 0,
+    frameRate: opts.frameRate ?? 25,
+    repeat: opts.loop == undefined ? -1 : opts.loop ? -1 : 0,
   });
 
   return animation || scene.anims.get(key);
