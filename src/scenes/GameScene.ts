@@ -1,12 +1,14 @@
 import { PATH_LEVEL_1, enemy1, enemy2, enemy3 } from '../constants';
+import Barrier from '../sprites/Barrier';
+import Enemy from '../sprites/Enemy';
 import Tower from '../sprites/Tower';
-import Enemy from '../sprites/enemy';
 import Hud from './components/Hud';
 
 class GameScene extends Phaser.Scene {
   public enemies!: Enemy[];
   public towers!: Tower[];
-  public path : Phaser.Curves.Path;
+  public barrier?: Barrier;
+  public path: Phaser.Curves.Path;
 
   public health!: number;
   public gold!: number;
@@ -14,7 +16,6 @@ class GameScene extends Phaser.Scene {
 
   constructor() {
     super({ key: 'GameScene' });
-
     this.path = this.generatePath(PATH_LEVEL_1);
   }
 
@@ -30,12 +31,12 @@ class GameScene extends Phaser.Scene {
     const map = this.make.tilemap({ key: 'level1' });
     const tileset = map.addTilesetImage('ground-tiles', 'tiles');
     map.createLayer('Tile Layer 1', tileset!, 0, -220)!; // nem me pergunta pq desse -220
-    // this.spawnEnemy();
+    this.spawnEnemy();
 
     this.events.on('enemy-killed', (enemy: Enemy) => {
       // Evita que o inimigo seja contabilizado mais de uma vez
-      if (enemy.reward === 0) return;
       // se o inimigo não tiver recompensa, quer dizer que ele já foi contabilizado
+      if (enemy.reward === 0) return;
 
       this.gold += enemy.extractReward();
       this.HUD.updateGold(this.gold);
@@ -51,7 +52,8 @@ class GameScene extends Phaser.Scene {
     // ╭──────────────────────────────────────────────────────────╮
     // │                          debug                           │
     // ╰──────────────────────────────────────────────────────────╯
-    this.enemies.push(new Enemy(this, enemy1));
+    // this.enemies.push(new Enemy(this, enemy1));
+    // this.enemies.push(new Enemy(this, enemy1));
   }
 
   spawnEnemy() {
@@ -68,9 +70,7 @@ class GameScene extends Phaser.Scene {
 
   update() {
     if (this.enemies.length === 30) return;
-    for (const enemy of this.enemies) {
-      if (enemy.active) enemy.update();
-    }
+    for (const enemy of this.enemies) if (enemy.active) enemy.update();
     for (const tower of this.towers) tower.update();
   }
 
