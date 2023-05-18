@@ -1,5 +1,6 @@
 import GameScene from '../scenes/GameScene';
 import { makeAnimation } from '../utils';
+import Barrier from './Barrier';
 import HealthBar from './HealthBar';
 
 export interface EnemyConfig {
@@ -10,22 +11,20 @@ export interface EnemyConfig {
   damage: number;
 }
 
-type EnemyState = 'walking' | 'attacking' | 'dying' | 'dead';
-
 export default class Enemy extends Phaser.GameObjects.Sprite {
   declare scene: GameScene;
-  declare state: EnemyState;
+  declare state: 'walking' | 'attacking' | 'dying' | 'dead';
 
-  public textureID: string;
-  public path: Phaser.Curves.Path;
-  // public state: EnemyState;
+  textureID: string;
+  path: Phaser.Curves.Path;
 
-  public velocity: number;
-  public hp: HealthBar;
-  public reward: number;
-  public damage: number;
+  velocity: number;
+  hp: HealthBar;
+  reward: number;
+  damage: number;
 
-  private follower: Phaser.GameObjects.PathFollower;
+  follower: Phaser.GameObjects.PathFollower;
+  target?: Barrier;
 
   constructor(scene: GameScene, config: EnemyConfig) {
     super(scene, 0, 0, config.texture);
@@ -58,7 +57,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   hurt(damage: number) {
     this.hp.decrease(damage);
 
-    if (this.isDead()) this.die();
+    if (this.hp.value == 0) this.die();
   }
 
   extractReward() {
@@ -69,38 +68,24 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   isDead() {
-    return this.hp.value == 0;
+    return this.state === 'dead' || this.state === 'dying';
   }
-
-  graphics = this.scene.add.graphics();
 
   update() {
     const pathCompleted = this.path
       .getEndPoint()
       .equals(this.follower.pathVector);
 
-    const barrier = this.scene.barrier;
-
-    if (
-      barrier &&
-      Phaser.Geom.Intersects.RectangleToRectangle(
-        this.follower.getBounds(),
-        barrier.getBounds()
-      )
-    ) {
+    const isAlreadyAttacking = this.state === 'attacking';
+    if (!isAlreadyAttacking && this.scene.barrier?.isCollidingWithEnemy(this)) {
+      this.target = this.scene.barrier;
       this.attack();
     }
-
-    // draw enemy bounds
-    this.graphics.clear();
-    this.graphics.lineStyle(1, 0xffffff, 1);
-    this.graphics.strokeRectShape(this.follower.getBounds());
 
     this.hp.draw(this.x, this.y);
     if (pathCompleted) {
       this.scene.events.emit('enemy-reached-end', this);
-      this.dispose();
-      return;
+      return this.dispose();
     }
 
     this.setPosition(this.follower.x, this.follower.y);
@@ -108,6 +93,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
 
   walk() {
     if (this.state == 'walking') return;
+    this.follower.resumeFollow();
     const animation = makeAnimation(
       this.scene,
       'Walking',
@@ -119,16 +105,34 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   attack() {
-    if (this.state == 'attacking') return;
-    const animation = makeAnimation(
-      this.scene,
-      'Attacking',
-      this.textureID,
-      true
-    );
-    this.follower.anims.play(animation);
-    this.follower.pauseFollow();
-    this.state = 'attacking';
+    if (this.target === undefined) return;
+
+    // Começar animação de ataque
+    if (this.state !== 'attacking') {
+      const animation = makeAnimation(
+        this.scene,
+        'Attacking',
+        this.textureID,
+        true
+      );
+      this.follower.anims.play(animation);
+      this.follower.pauseFollow();
+      this.state = 'attacking';
+    }
+
+    this.target.hurt(this.damage);
+
+    if (this.target.hp.isZero()) {
+      this.target = undefined;
+
+      this.walk();
+    }
+
+    this.scene.time.addEvent({
+      delay: 1000,
+      callback: this.attack,
+      callbackScope: this,
+    });
   }
 
   die() {
