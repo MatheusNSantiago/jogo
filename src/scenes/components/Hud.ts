@@ -1,8 +1,9 @@
-import { CANVAS_HEIGHT  } from '../../constants';
-import Barrier from '../../sprites/Barrier';
-import Enemy from '../../sprites/Enemy';
-import Tower from '../../sprites/Tower';
-import GameScene from '../GameScene';
+import { CANVAS_HEIGHT } from "../../constants";
+import Barrier from "../../sprites/Barrier";
+import Bomb from "../../sprites/Bomb";
+import Enemy from "../../sprites/Enemy";
+import Tower from "../../sprites/Tower";
+import GameScene from "../GameScene";
 
 class Hud extends Phaser.GameObjects.Container {
   declare scene: GameScene;
@@ -23,13 +24,12 @@ class Hud extends Phaser.GameObjects.Container {
     this.healthBar = this.makeHealthBar(10, 35);
     this.goldText = this.makeGoldCounter(scene.gold, 20, 130);
 
-    this.addDockButton('archer-tower-card.png', 'archer-tower-front.png');
-    this.addDockButton('castle-tower-card.png', 'castle-tower-front.png');
-    this.addDockButton('knight-post-card.png', 'knight-post-front.png');
+    this.addTowerDockButton("archer-tower-card.png", "archer-tower-front.png");
+    this.addTowerDockButton("castle-tower-card.png", "castle-tower-front.png");
+    this.addTowerDockButton("knight-post-card.png", "knight-post-front.png");
 
-    // this.addDockButton('power1.png', 'knight-post-front.png');
-    this.addCoiso();
-    // this.addDockButton('power3.png', 'knight-post-front.png');
+    this.addPowerUpDockButton("power2.png");
+    this.addPowerUpDockButton("power3.png");
   }
 
   updateGold(gold: number) {
@@ -47,58 +47,47 @@ class Hud extends Phaser.GameObjects.Container {
   }
 
   private makeHealthBar(x: number, y: number) {
-   this.scene.add
-      .sprite(x, y, 'hud', 'health.png')
+    this.scene.add
+      .sprite(x, y, "hud", "health.png")
       .setOrigin(0, 0)
       .setDepth(100);
     return this.scene.add
-      .sprite(x + 100, y + 20.5, 'hud', 'health-bar.png')
+      .sprite(x + 100, y + 20.5, "hud", "health-bar.png")
       .setOrigin(0, 0)
       .setDepth(101);
   }
 
   private makeGoldCounter(initialGold: number, x: number, y: number) {
     this.scene.add
-      .sprite(x, y, 'hud', 'gold.png')
+      .sprite(x, y, "hud", "gold.png")
       .setOrigin(0, 0)
       .setDepth(100);
 
     return this.scene.add
       .text(x + 65, y + 20, initialGold.toString(), {
-        fontSize: '44px',
-        color: '#fff',
+        fontSize: "44px",
+        color: "#fff",
       })
       .setDepth(101);
   }
 
-  private addDockButton(buttonFrame: string, frame: string) {
-    const padding = 20 * this.dockButtonsCount;
-    const dockButtonScale = 1.25;
-    const dockButtonWidth = 171 * dockButtonScale;
-    const dockButtonHeight = 210 * dockButtonScale;
-
-    const button = this.scene.add
-      .image(
-        50 + padding + this.dockButtonsCount * dockButtonWidth,
-        CANVAS_HEIGHT - dockButtonHeight,
-        'dock',
-        buttonFrame
-      )
-      .setOrigin(0, 0)
-      .setScale(dockButtonScale)
-      .setDepth(100)
-      .setInteractive({ cursor: 'grab' });
-    this.scene.input.setDraggable(button);
-
+  private addTowerDockButton(buttonFrame: string, frame: string) {
+    const button = this.getDockButton(buttonFrame);
     Tower.dragAndDrop(this.scene, button, frame);
-
-    this.dockButtonsCount++;
   }
 
+  private addPowerUpDockButton(buttonFrame: string) {
+    const button = this.getDockButton(buttonFrame);
 
-  addCoiso() {
-    const buttonFrame = 'power2.png';
+    switch (buttonFrame) {
+      case "power2.png":
+        return Barrier.dragAndDrop(this.scene, button);
+      case "power3.png":
+        return Bomb.dragAndDrop(this.scene, button);
+    }
+  }
 
+  private getDockButton(buttonFrame: string) {
     const padding = 20 * this.dockButtonsCount;
     const dockButtonScale = 1.25;
     const dockButtonWidth = 171 * dockButtonScale;
@@ -108,16 +97,16 @@ class Hud extends Phaser.GameObjects.Container {
       .image(
         50 + padding + this.dockButtonsCount * dockButtonWidth,
         CANVAS_HEIGHT - dockButtonHeight,
-        'dock',
+        "dock",
         buttonFrame
       )
       .setOrigin(0, 0)
       .setScale(dockButtonScale)
       .setDepth(100)
-      .setInteractive({ cursor: 'grab' });
+      .setInteractive({ cursor: "grab" });
     this.scene.input.setDraggable(button);
-
-    Barrier.dragAndDrop(this.scene, button)
+    this.dockButtonsCount++;
+    return button;
   }
 }
 
