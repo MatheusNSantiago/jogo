@@ -75,18 +75,18 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   update() {
-    const pathCompleted = this.path
+    const isPathCompleted = this.path
       .getEndPoint()
       .equals(this.follower.pathVector);
 
-    const isAlreadyAttacking = this.state === 'attacking';
-    if (!isAlreadyAttacking && this.scene.barrier?.isCollidingWithEnemy(this)) {
+    const enconteredABarrier = this.scene.barrier?.isCollidingWithEnemy(this);
+    if (enconteredABarrier && this.state !== 'attacking'){
       this.target = this.scene.barrier;
       this.attack();
     }
 
     this.hp.draw(this.x, this.y);
-    if (pathCompleted) {
+    if (isPathCompleted) {
       this.scene.events.emit('enemy-reached-end', this);
       return this.dispose();
     }
@@ -103,7 +103,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   attack() {
-    if (this.target === undefined) return;
+    if (this.target === undefined || this.isDead()) return;
 
     // Começar animação de ataque
     if (this.state !== 'attacking') {
@@ -165,5 +165,9 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
     for (const { x, y } of points.slice(1)) path.lineTo(x, y);
 
     return path;
+  }
+
+  getBounds<O extends Phaser.Geom.Rectangle>(): O {
+    return this.follower.getBounds()
   }
 }
