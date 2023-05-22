@@ -1,6 +1,5 @@
 import GameScene from "../scenes/GameScene";
 import { useAnimation } from "../utils";
-import Enemy from "./Enemy";
 
 class Bomb extends Phaser.GameObjects.Arc {
   declare scene: GameScene;
@@ -53,7 +52,17 @@ class Bomb extends Phaser.GameObjects.Arc {
     this.scene.time.delayedCall(300, () => this.dispose());
   }
 
-  playExplosionAnimation() { }
+  playExplosionAnimation() {
+    const animation = useAnimation(this.scene, "Explosion", "explosion", {
+      loop: false,
+      frameRate: 12,
+    });
+
+    const explosion = this.scene.add.sprite(this.x, this.y, "explosion");
+    explosion.setDisplaySize(this.radius * 1.8, this.radius * 1.8);
+    explosion.anims.play(animation);
+    explosion.on("animationcomplete", () => explosion.destroy());
+  }
 
   playExplosionSound() { }
 
@@ -63,7 +72,7 @@ class Bomb extends Phaser.GameObjects.Arc {
     button.on("dragstart", ({ x, y }: Phaser.Input.Pointer) => {
       bomb = new this(scene, x, y).setInteractive({ cursor: "pointer" });
       scene.input.setDraggable(bomb);
-    })
+    });
     button.on("drag", ({ x, y }: Phaser.Input.Pointer) => {
       scene.input.setDefaultCursor("grabbing");
       bomb.setPosition(x, y);
