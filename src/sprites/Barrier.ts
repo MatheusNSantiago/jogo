@@ -1,4 +1,5 @@
 import GameScene from "../scenes/GameScene";
+import { isMouseOnTopOfPath } from "../utils";
 import Enemy from "./Enemy";
 import HealthBar from "./HealthBar";
 
@@ -59,15 +60,20 @@ class Barrier extends Phaser.GameObjects.Rectangle {
 
 
     button.on("dragstart", ({ x, y }: Phaser.Input.Pointer) => {
-      barrier = new this(scene, x, y).setInteractive({ cursor: "pointer" });
+      barrier = new Barrier(scene, x, y).setInteractive({ cursor: "pointer" });
       scene.input.setDraggable(barrier);
     });
     button.on("drag", ({ x, y }: Phaser.Input.Pointer) => {
-      scene.input.setDefaultCursor("grabbing");
-
+      if (isMouseOnTopOfPath(scene.path, x, y)) {
+        scene.input.setDefaultCursor('grabbing');
+      } else {
+        scene.input.setDefaultCursor('not-allowed');
+      }
       barrier.setPosition(x, y);
     });
     button.on("dragend", () => {
+      if (!isMouseOnTopOfPath(scene.path, barrier.x, barrier.y)) return barrier.dispose();
+
       scene.input.setDefaultCursor("default");
       barrier.enable();
       scene.barrier = barrier;
