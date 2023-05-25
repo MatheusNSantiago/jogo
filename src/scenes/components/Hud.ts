@@ -1,9 +1,8 @@
-import { CANVAS_HEIGHT } from "../../constants";
+import { ARCHER_TOWER, CANVAS_HEIGHT, CASTLE_TOWER, KNIGHT_FORT } from "../../constants";
 import Barrier from "../../sprites/Barrier";
 import Bomb from "../../sprites/Bomb";
-import Enemy from "../../sprites/Enemy";
-import Tower from "../../sprites/Tower";
 import GameScene from "../GameScene";
+import Tower, { TowerConfig } from "../../sprites/Tower";
 
 class Hud extends Phaser.GameObjects.Container {
   declare scene: GameScene;
@@ -12,21 +11,18 @@ class Hud extends Phaser.GameObjects.Container {
   private goldText: Phaser.GameObjects.Text;
   private healthBar: Phaser.GameObjects.Sprite;
   private initialHealth: number;
-  private enemies: Enemy[];
-  private towers: Tower[];
 
   constructor(scene: GameScene) {
     super(scene);
-    this.enemies = scene.enemies;
-    this.towers = scene.towers;
     this.initialHealth = scene.health;
+    this.scene.add.image(1000, 500, "tower-cost-button");
 
     this.healthBar = this.makeHealthBar(10, 35);
     this.goldText = this.makeGoldCounter(scene.gold, 20, 130);
 
-    this.addTowerDockButton("archer-tower-card.png", "archer-tower-front.png");
-    this.addTowerDockButton("castle-tower-card.png", "castle-tower-front.png");
-    this.addTowerDockButton("knight-post-card.png", "knight-post-front.png");
+    this.addTowerDockButton(ARCHER_TOWER);
+    this.addTowerDockButton(CASTLE_TOWER);
+    this.addTowerDockButton(KNIGHT_FORT);
 
     this.addPowerUpDockButton("power2.png");
     this.addPowerUpDockButton("power3.png");
@@ -71,9 +67,21 @@ class Hud extends Phaser.GameObjects.Container {
       .setDepth(101);
   }
 
-  private addTowerDockButton(buttonFrame: string, frame: string) {
+  private addTowerDockButton(towerConfig: TowerConfig) {
+    const buttonFrame = `${towerConfig.type}-tower-card.png`;
+
     const button = this.getDockButton(buttonFrame);
-    Tower.dragAndDrop(this.scene, button, frame);
+    const x = button.x + button.width / 2;
+    const y = button.y + button.height + 6;
+    this.scene.add
+      .image(x, y, "tower-cost-button")
+      .setDepth(100)
+      .setOrigin(0.3, 0);
+    this.scene.add
+      .text(x + 10, y + 9, towerConfig.cost.toString(), { fontSize: "32.5px" })
+      .setDepth(101)
+      .setOrigin(0.2, 0);
+    Tower.dragAndDrop(this.scene, button, towerConfig);
   }
 
   private addPowerUpDockButton(buttonFrame: string) {
@@ -96,7 +104,7 @@ class Hud extends Phaser.GameObjects.Container {
     const button = this.scene.add
       .image(
         50 + padding + this.dockButtonsCount * dockButtonWidth,
-        CANVAS_HEIGHT - dockButtonHeight,
+        CANVAS_HEIGHT - dockButtonHeight - 20,
         "dock",
         buttonFrame
       )
@@ -104,6 +112,7 @@ class Hud extends Phaser.GameObjects.Container {
       .setScale(dockButtonScale)
       .setDepth(100)
       .setInteractive({ cursor: "grab" });
+
     this.scene.input.setDraggable(button);
     this.dockButtonsCount++;
     return button;
