@@ -68,6 +68,11 @@ class GameScene extends Phaser.Scene {
     });
   }
 
+  subtractGold(amount: number) {
+    this.gold -= amount;
+    this.HUD.updateGold(this.gold);
+  }
+
   update() {
     if (this.enemies.length === 30) return;
     for (const enemy of this.enemies) if (enemy.active) enemy.update();
