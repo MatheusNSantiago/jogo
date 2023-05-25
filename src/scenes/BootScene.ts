@@ -48,6 +48,7 @@ class BootScene extends Phaser.Scene {
       `${ASSETS_PATH}/sprites/gui/dock/dock.json`
     );
 
+    this.load.image("tower-cost-button", `${ASSETS_PATH}/sprites/gui/button.png`);
     // ╭──────────────────────────────────────────────────────────╮
     // │                           hud                            │
     // ╰──────────────────────────────────────────────────────────╯
