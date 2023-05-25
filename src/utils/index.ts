@@ -14,8 +14,8 @@ export function useAnimation(
 
   const json = scene.cache.json.get(`${textureID}-json`);
   var frames = [];
-  for (const texture of json["textures"]) {
-    for (const frame of texture["frames"]) {
+  for (const texture of json['textures']) {
+    for (const frame of texture['frames']) {
       if (frame.filename.startsWith(action)) frames.push(frame.filename);
     }
   }
@@ -24,7 +24,7 @@ export function useAnimation(
     end: frames.length - 1,
     zeroPad: 3,
     prefix: `${action}/${action}_`,
-    suffix: ".png",
+    suffix: '.png',
   });
 
   const animation = scene.anims.create({
@@ -44,4 +44,16 @@ export function loadAnimation(
 ) {
   scene.load.multiatlas(key, `${folderPath}/${key}.json`, folderPath);
   scene.load.json(`${key}-json`, `${folderPath}/${key}.json`);
+}
+
+export function isMouseOnTopOfPath(
+  path: Phaser.Curves.Path,
+  x: number,
+  y: number
+) {
+  const point = path.getPoints();
+  const distance = 85;
+  return point.some(
+    (p) => Phaser.Math.Distance.Between(x, y, p.x, p.y) < distance
+  );
 }
