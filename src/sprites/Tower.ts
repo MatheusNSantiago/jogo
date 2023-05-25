@@ -147,17 +147,12 @@ export default class Tower extends Phaser.GameObjects.Image {
     button.on('dragend', ({ x, y }: Phaser.Input.Pointer) => {
       scene.input.setDefaultCursor('default');
 
-      if (isMouseOnTopOfPath(scene.path, x, y)) {
-        tower.dispose();
-      } else {
-        if (scene.gold >= tower.cost) {
-          tower.enable();
-          scene.towers.push(tower);
-          scene.subtractGold(tower.cost);
-        } else {
-          tower.dispose();
-        }
-      }
+      if (isMouseOnTopOfPath(scene.path, x, y) || scene.gold < tower.cost)
+        return tower.dispose();
+
+      tower.enable();
+      scene.towers.push(tower);
+      scene.subtractGold(tower.cost);
     });
   }
 }
