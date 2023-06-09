@@ -2,13 +2,13 @@
 Thumbs.db
 .DS_Store
 .vscode
-src/assets/outros/mario
-src/assets/outros/samuraijs
+public/assets/outros
 src/models
 
 
 # Vendors
 node_modules/
+
 
 # Build
 dist
