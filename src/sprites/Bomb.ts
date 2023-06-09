@@ -10,8 +10,8 @@ class Bomb extends Phaser.GameObjects.Arc {
     scene: GameScene,
     x: number,
     y: number,
-    radius = 400,
-    damage = 100
+    radius = 500,
+    damage = 350
   ) {
     super(scene, x, y, radius, 0, 360, false, 0xff0000, 0.3);
 
@@ -22,10 +22,6 @@ class Bomb extends Phaser.GameObjects.Arc {
     scene.add.existing(this);
   }
 
-  dispose() {
-    this.destroy();
-  }
-
   explode() {
     const enemyMargin = 100;
     const bombBounds = new Phaser.Geom.Circle(
@@ -34,37 +30,32 @@ class Bomb extends Phaser.GameObjects.Arc {
       this.radius - enemyMargin
     );
 
-    // Da dano em todos os inimigos que estiverem dentro do raio
-    for (const enemy of this.scene.enemies) {
-      const isInRange = Phaser.Geom.Intersects.CircleToRectangle(
-        bombBounds,
-        enemy.getBounds()
-      );
-
-      if (isInRange && enemy.active) {
-        enemy.hurt(this.damage);
-      }
-    }
-
-    this.playExplosionAnimation();
-    this.playExplosionSound();
-
-    this.scene.time.delayedCall(300, () => this.dispose());
-  }
-
-  playExplosionAnimation() {
     const animation = useAnimation(this.scene, "Explosion", "explosion", {
       loop: false,
-      frameRate: 12,
+      frameRate: 15,
     });
-
     const explosion = this.scene.add.sprite(this.x, this.y, "explosion");
-    explosion.setDisplaySize(this.radius * 1.8, this.radius * 1.8);
+    explosion.setDisplaySize(this.radius * 5, this.radius * 5);
     explosion.anims.play(animation);
-    explosion.on("animationcomplete", () => explosion.destroy());
-  }
 
-  playExplosionSound() { }
+    // Espera até a bomba explodir (que é 1/4 da duração da animação)
+    this.scene.time.delayedCall(animation.duration / 4, () => {
+      this.setVisible(false);
+
+      // Da dano em todos os inimigos que estiverem dentro do raio
+      for (const enemy of this.scene.enemies) {
+        const isInRange = Phaser.Geom.Intersects.CircleToRectangle(
+          bombBounds,
+          enemy.getBounds()
+        );
+        if (isInRange) enemy.hurt(this.damage);
+      }
+    });
+    explosion.on("animationcomplete", () => {
+      explosion.destroy();
+      this.destroy();
+    });
+  }
 
   static dragAndDrop(scene: GameScene, button: Phaser.GameObjects.Image) {
     var bomb: Bomb;
