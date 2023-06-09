@@ -6,9 +6,9 @@ import BootScene from './scenes/BootScene';
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
-  pixelArt: true,
   height: CANVAS_HEIGHT,
   width: CANVAS_WIDTH,
+  fps: { limit: 40 },
   transparent: true,
   scale: {
     parent: 'game',
