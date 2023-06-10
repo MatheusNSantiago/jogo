@@ -1,0 +1,720 @@
+{
+	"textures": [
+		{
+			"image": "ork2.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 1837,
+				"h": 1735
+			},
+			"scale": 0.25,
+			"frames": [
+				{
+					"filename": "Dying/Dying_002.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 507,
+						"h": 296
+					},
+					"spriteSourceSize": {
+						"x": 18,
+						"y": 2,
+						"w": 459,
+						"h": 289
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 459,
+						"h": 289
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Dying/Dying_003.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 512,
+						"h": 294
+					},
+					"spriteSourceSize": {
+						"x": 18,
+						"y": 33,
+						"w": 465,
+						"h": 258
+					},
+					"frame": {
+						"x": 462,
+						"y": 1,
+						"w": 465,
+						"h": 258
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Attacking/Attacking_003.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 381,
+						"h": 367
+					},
+					"spriteSourceSize": {
+						"x": 15,
+						"y": 0,
+						"w": 354,
+						"h": 364
+					},
+					"frame": {
+						"x": 1,
+						"y": 292,
+						"w": 354,
+						"h": 364
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Attacking/Attacking_004.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 363,
+						"h": 413
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 36,
+						"w": 332,
+						"h": 374
+					},
+					"frame": {
+						"x": 1,
+						"y": 658,
+						"w": 332,
+						"h": 374
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Dying/Dying_004.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 496,
+						"h": 287
+					},
+					"spriteSourceSize": {
+						"x": 17,
+						"y": 46,
+						"w": 456,
+						"h": 221
+					},
+					"frame": {
+						"x": 929,
+						"y": 1,
+						"w": 456,
+						"h": 221
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Attacking/Attacking_005.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 432,
+						"h": 341
+					},
+					"spriteSourceSize": {
+						"x": 15,
+						"y": 1,
+						"w": 370,
+						"h": 337
+					},
+					"frame": {
+						"x": 1,
+						"y": 1034,
+						"w": 370,
+						"h": 337
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Attacking/Attacking_002.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 433,
+						"h": 321
+					},
+					"spriteSourceSize": {
+						"x": 12,
+						"y": 0,
+						"w": 374,
+						"h": 319
+					},
+					"frame": {
+						"x": 1,
+						"y": 1373,
+						"w": 374,
+						"h": 319
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Dying/Dying_001.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 447,
+						"h": 300
+					},
+					"spriteSourceSize": {
+						"x": 15,
+						"y": 0,
+						"w": 416,
+						"h": 297
+					},
+					"frame": {
+						"x": 1387,
+						"y": 1,
+						"w": 416,
+						"h": 297
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Dying/Dying_006.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 487,
+						"h": 235
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 24,
+						"w": 470,
+						"h": 186
+					},
+					"frame": {
+						"x": 462,
+						"y": 261,
+						"w": 470,
+						"h": 186
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Walking/Walking_000.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 422,
+						"h": 309
+					},
+					"spriteSourceSize": {
+						"x": 14,
+						"y": 3,
+						"w": 390,
+						"h": 302
+					},
+					"frame": {
+						"x": 934,
+						"y": 224,
+						"w": 390,
+						"h": 302
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Dying/Dying_005.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 484,
+						"h": 252
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 25,
+						"w": 462,
+						"h": 197
+					},
+					"frame": {
+						"x": 1326,
+						"y": 300,
+						"w": 462,
+						"h": 197
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Idle/Idle_004.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 408,
+						"h": 301
+					},
+					"spriteSourceSize": {
+						"x": 12,
+						"y": 1,
+						"w": 382,
+						"h": 300
+					},
+					"frame": {
+						"x": 357,
+						"y": 449,
+						"w": 382,
+						"h": 300
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Idle/Idle_003.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 407,
+						"h": 301
+					},
+					"spriteSourceSize": {
+						"x": 12,
+						"y": 1,
+						"w": 381,
+						"h": 300
+					},
+					"frame": {
+						"x": 741,
+						"y": 528,
+						"w": 381,
+						"h": 300
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Attacking/Attacking_006.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 386,
+						"h": 301
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 0,
+						"w": 375,
+						"h": 300
+					},
+					"frame": {
+						"x": 1124,
+						"y": 528,
+						"w": 375,
+						"h": 300
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Walking/Walking_003.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 355,
+						"h": 303
+					},
+					"spriteSourceSize": {
+						"x": 19,
+						"y": 0,
+						"w": 335,
+						"h": 300
+					},
+					"frame": {
+						"x": 1501,
+						"y": 499,
+						"w": 335,
+						"h": 300
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Walking/Walking_004.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 355,
+						"h": 303
+					},
+					"spriteSourceSize": {
+						"x": 19,
+						"y": 0,
+						"w": 335,
+						"h": 300
+					},
+					"frame": {
+						"x": 1501,
+						"y": 801,
+						"w": 335,
+						"h": 300
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Attacking/Attacking_000.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 359,
+						"h": 297
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 359,
+						"h": 297
+					},
+					"frame": {
+						"x": 373,
+						"y": 751,
+						"w": 359,
+						"h": 297
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Dying/Dying_000.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 359,
+						"h": 297
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 359,
+						"h": 297
+					},
+					"frame": {
+						"x": 373,
+						"y": 751,
+						"w": 359,
+						"h": 297
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Idle/Idle_000.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 359,
+						"h": 297
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 359,
+						"h": 297
+					},
+					"frame": {
+						"x": 373,
+						"y": 751,
+						"w": 359,
+						"h": 297
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Walking/Walking_001.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 384,
+						"h": 305
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 2,
+						"w": 373,
+						"h": 301
+					},
+					"frame": {
+						"x": 373,
+						"y": 1050,
+						"w": 373,
+						"h": 301
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Walking/Walking_006.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 382,
+						"h": 305
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 2,
+						"w": 372,
+						"h": 301
+					},
+					"frame": {
+						"x": 377,
+						"y": 1353,
+						"w": 372,
+						"h": 301
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Attacking/Attacking_001.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 418,
+						"h": 299
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 0,
+						"w": 378,
+						"h": 299
+					},
+					"frame": {
+						"x": 748,
+						"y": 830,
+						"w": 378,
+						"h": 299
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Idle/Idle_006.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 377,
+						"h": 298
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 0,
+						"w": 370,
+						"h": 298
+					},
+					"frame": {
+						"x": 1128,
+						"y": 830,
+						"w": 370,
+						"h": 298
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Idle/Idle_002.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 392,
+						"h": 300
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 0,
+						"w": 376,
+						"h": 300
+					},
+					"frame": {
+						"x": 751,
+						"y": 1131,
+						"w": 376,
+						"h": 300
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Walking/Walking_002.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 358,
+						"h": 302
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 1,
+						"w": 355,
+						"h": 301
+					},
+					"frame": {
+						"x": 751,
+						"y": 1433,
+						"w": 355,
+						"h": 301
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Walking/Walking_005.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 358,
+						"h": 302
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 1,
+						"w": 354,
+						"h": 301
+					},
+					"frame": {
+						"x": 1108,
+						"y": 1433,
+						"w": 354,
+						"h": 301
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Idle/Idle_005.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 392,
+						"h": 300
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 0,
+						"w": 376,
+						"h": 300
+					},
+					"frame": {
+						"x": 1129,
+						"y": 1130,
+						"w": 376,
+						"h": 300
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "Idle/Idle_001.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 376,
+						"h": 298
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 0,
+						"w": 369,
+						"h": 298
+					},
+					"frame": {
+						"x": 1464,
+						"y": 1432,
+						"w": 369,
+						"h": 298
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:f87a4fb947675bfd331b6521a9d91684:b30f80f27400ac0179fe88c5a361b399:9e0d21dfb528dbb8600381a53dcd2065$"
+	}
+}
