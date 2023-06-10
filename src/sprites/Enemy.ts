@@ -1,7 +1,7 @@
-import GameScene from '../scenes/GameScene';
-import { useAnimation } from '../utils';
-import Barrier from './Barrier';
-import HealthBar from './HealthBar';
+import GameScene from "../scenes/GameScene";
+import { useAnimation } from "../utils";
+import Barrier from "./Barrier";
+import HealthBar from "./HealthBar";
 
 export interface EnemyConfig {
   texture: string;
@@ -10,17 +10,24 @@ export interface EnemyConfig {
   reward: number;
   damage: number;
   attackSpeed: number;
+  scale?: number;
+  frameRate?: number;
+  pathNoise?: {
+    dx: { lower: number; upper: number };
+    dy: { lower: number; upper: number };
+  };
 }
 
 export default class Enemy extends Phaser.GameObjects.Sprite {
   declare scene: GameScene;
-  declare state: 'walking' | 'attacking' | 'dying' | 'dead';
+  declare state: "walking" | "attacking" | "dying" | "dead";
 
   textureID: string;
   path: Phaser.Curves.Path;
 
-  velocity: number;
   hp: HealthBar;
+  config: EnemyConfig;
+  velocity: number;
   reward: number;
   damage: number;
   attackSpeed: number;
@@ -28,8 +35,10 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   follower: Phaser.GameObjects.PathFollower;
   target?: Barrier;
 
+
   constructor(scene: GameScene, config: EnemyConfig) {
     super(scene, 0, 0, config.texture);
+    this.config = config;
     this.textureID = config.texture;
     this.velocity = config.velocity;
     this.hp = new HealthBar(scene, config.hp);
@@ -47,7 +56,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
         this.path.startPoint.y,
         this.textureID
       )
-      .setScale(0.5);
+      .setScale(config.scale);
 
     this.follower.startFollow({
       duration: (this.path.getLength() / this.velocity) * 1000,
@@ -71,7 +80,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   isDead() {
-    return this.state === 'dead' || this.state === 'dying';
+    return this.state === "dead" || this.state === "dying";
   }
 
   update() {
@@ -80,39 +89,50 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
       .equals(this.follower.pathVector);
 
     const enconteredABarrier = this.scene.barrier?.isCollidingWithEnemy(this);
-    if (enconteredABarrier && this.state !== 'attacking'){
+    if (enconteredABarrier && this.state !== "attacking") {
       this.target = this.scene.barrier;
       this.attack();
     }
 
     this.hp.draw(this.x, this.y);
     if (isPathCompleted) {
-      this.scene.events.emit('enemy-reached-end', this);
+      this.scene.events.emit("enemy-reached-end", this);
       return this.dispose();
     }
 
     this.setPosition(this.follower.x, this.follower.y);
+    this.follower.setPosition(
+      this.follower.x,
+      this.follower.y
+    );
+
   }
 
   walk() {
-    if (this.state == 'walking') return;
+    if (this.state == "walking") return;
     this.follower.resumeFollow();
-    const animation = useAnimation(this.scene, 'Walking', this.textureID);
+    const animation = useAnimation(this.scene, "Walking", this.textureID, {
+      frameRate: this.config.frameRate,
+    });
     this.follower.anims.play(animation);
-    this.state = 'walking';
+    this.state = "walking";
   }
 
   attack() {
     if (this.target === undefined || this.isDead()) return;
 
     // Começar animação de ataque
-    if (this.state !== 'attacking') {
-      const animation = useAnimation(this.scene, 'Attacking', this.textureID, {
-        frameRate: 18 * this.attackSpeed,
+    if (this.state !== "attacking") {
+      const animation = useAnimation(this.scene, "Attacking", this.textureID, {
+        frameRate: (this.config.frameRate ?? 18) * this.attackSpeed,
       });
-      this.follower.anims.play(animation);
+      this.follower.play(animation);
       this.follower.pauseFollow();
-      this.state = 'attacking';
+      this.state = "attacking";
+
+      // At every frame of the animation, set the position to
+      // this.follower.on('animationupdate', () => {
+      // });
     }
 
     if (this.target.hp.isZero()) {
@@ -121,7 +141,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
     }
 
     this.scene.time.addEvent({
-      delay: 700 * 1/this.attackSpeed,
+      delay: (700 * 1) / this.attackSpeed,
       callback: () => {
         this.target?.hurt(this.damage);
         this.attack();
@@ -131,16 +151,17 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   die() {
-    if (this.state == 'dying') return;
-    const animation = useAnimation(this.scene, 'Dying', this.textureID, {
+    if (this.state == "dying") return;
+    const animation = useAnimation(this.scene, "Dying", this.textureID, {
       loop: false,
+      frameRate: this.config.frameRate,
     });
     this.follower.anims.play(animation);
-    this.state = 'dying';
+    this.state = "dying";
 
     this.follower.pauseFollow();
-    this.follower.on('animationcomplete', () => {
-      this.state = 'dead';
+    this.follower.on("animationcomplete", () => {
+      this.state = "dead";
       this.dispose();
     });
   }
@@ -153,12 +174,15 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   generatePath() {
-    var noise = Phaser.Math.Between(-30, 30);
-    var points = this.scene.path.getPoints(1);
+    const { dx, dy } = this.config.pathNoise ?? {
+      dx: { lower: 0, upper: 0 },
+      dy: { lower: 0, upper: 0 },
+    };
 
+    var points = this.scene.path.getPoints(1);
     for (const point of points) {
-      point.x += noise;
-      point.y += noise;
+      point.x += Phaser.Math.Between(dx.lower, dx.upper);
+      point.y += Phaser.Math.Between(dy.lower, dy.upper);
     }
 
     const path = new Phaser.Curves.Path(points[0].x, points[0].y);
@@ -168,6 +192,6 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   getBounds<O extends Phaser.Geom.Rectangle>(): O {
-    return this.follower.getBounds()
+    return this.follower.getBounds();
   }
 }

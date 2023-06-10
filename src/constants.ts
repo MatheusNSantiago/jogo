@@ -28,20 +28,20 @@ const skeletonNoise = {
 
 export const skeleton1: EnemyConfig = {
   texture: "skeleton1",
-  hp: 100,
+  hp: 75,
   velocity: 180,
   reward: 20,
-  damage: 20,
+  damage: 15,
   attackSpeed: 1,
   pathNoise: skeletonNoise,
 };
 
 export const skeleton2: EnemyConfig = {
   texture: "skeleton2",
-  hp: 100,
+  hp: 85,
   velocity: 180,
-  reward: 20,
-  damage: 20,
+  reward: 25,
+  damage: 18,
   attackSpeed: 1,
   pathNoise: skeletonNoise,
 };
@@ -50,7 +50,7 @@ export const skeleton3: EnemyConfig = {
   texture: "skeleton3",
   hp: 100,
   velocity: 180,
-  reward: 20,
+  reward: 35,
   damage: 20,
   attackSpeed: 1,
   pathNoise: skeletonNoise,
@@ -61,10 +61,10 @@ export const ork1: EnemyConfig = {
   hp: 300,
   velocity: 130,
   reward: 50,
-  damage: 45,
-  attackSpeed: 0.5,
+  damage: 40,
+  attackSpeed: 1,
   frameRate: 8,
-  scale: 0.62,
+  scale: 0.57,
 };
 
 export const ork3: EnemyConfig = {
@@ -72,10 +72,10 @@ export const ork3: EnemyConfig = {
   hp: 200,
   velocity: 130,
   reward: 50,
-  damage: 45,
-  attackSpeed: 0.5,
+  damage: 40,
+  attackSpeed: 1,
   frameRate: 8,
-  scale: 1.3,
+  scale: 0.57,
 };
 
 const golemNoise = {
