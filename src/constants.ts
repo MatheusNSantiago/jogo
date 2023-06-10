@@ -21,31 +21,78 @@ export const PATH_LEVEL_1 = [
 // │                         Enemies                          │
 // ╰──────────────────────────────────────────────────────────╯
 
-export const enemy1: EnemyConfig = {
-  texture: "enemy1",
-  hp: 100,
-  velocity: 180,
-  reward: 20,
-  damage: 20,
-  attackSpeed: 1,
+const skeletonNoise = {
+  dx: { lower: -30.0, upper: 30.0 },
+  dy: { lower: -30.0, upper: 30.0 },
 };
 
-export const enemy2: EnemyConfig = {
-  texture: "enemy2",
+export const skeleton1: EnemyConfig = {
+  texture: "skeleton1",
   hp: 100,
   velocity: 180,
   reward: 20,
   damage: 20,
   attackSpeed: 1,
+  pathNoise: skeletonNoise,
 };
 
-export const enemy3: EnemyConfig = {
-  texture: "enemy3",
+export const skeleton2: EnemyConfig = {
+  texture: "skeleton2",
   hp: 100,
   velocity: 180,
   reward: 20,
   damage: 20,
   attackSpeed: 1,
+  pathNoise: skeletonNoise,
+};
+
+export const skeleton3: EnemyConfig = {
+  texture: "skeleton3",
+  hp: 100,
+  velocity: 180,
+  reward: 20,
+  damage: 20,
+  attackSpeed: 1,
+  pathNoise: skeletonNoise,
+};
+
+export const ork1: EnemyConfig = {
+  texture: "ork1",
+  hp: 300,
+  velocity: 130,
+  reward: 50,
+  damage: 45,
+  attackSpeed: 0.5,
+  frameRate: 8,
+  scale: 0.62,
+};
+
+export const ork3: EnemyConfig = {
+  texture: "ork3",
+  hp: 200,
+  velocity: 130,
+  reward: 50,
+  damage: 45,
+  attackSpeed: 0.5,
+  frameRate: 8,
+  scale: 1.3,
+};
+
+const golemNoise = {
+  dx: { lower: 0, upper: 0 },
+  dy: { lower: -40.0, upper: 0 },
+};
+
+export const golem: EnemyConfig = {
+  texture: "golem",
+  hp: 300,
+  velocity: 100,
+  reward: 50,
+  damage: 45,
+  attackSpeed: 0.75,
+  frameRate: 10,
+  scale: 1.3,
+  pathNoise: golemNoise,
 };
 
 // ╭──────────────────────────────────────────────────────────╮

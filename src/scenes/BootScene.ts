@@ -18,9 +18,13 @@ class BootScene extends Phaser.Scene {
     // │                         Enemies                          │
     // ╰──────────────────────────────────────────────────────────╯
 
-    loadAnimation(this, "enemy1", `${ASSETS_PATH}/sprites/enemy1`);
-    loadAnimation(this, "enemy2", `${ASSETS_PATH}/sprites/enemy2`);
-    loadAnimation(this, "enemy3", `${ASSETS_PATH}/sprites/enemy3`);
+    loadAnimation(this, "skeleton1", `${ASSETS_PATH}/sprites/enemies/skeleton/skeleton1`);
+    loadAnimation(this, "skeleton2", `${ASSETS_PATH}/sprites/enemies/skeleton/skeleton2`);
+    loadAnimation(this, "skeleton3", `${ASSETS_PATH}/sprites/enemies/skeleton/skeleton3`);
+    loadAnimation(this, "ork1", `${ASSETS_PATH}/sprites/enemies/ork/ork1`);
+    loadAnimation(this, "ork2", `${ASSETS_PATH}/sprites/enemies/ork/ork2`);
+    loadAnimation(this, "ork3", `${ASSETS_PATH}/sprites/enemies/ork/ork3`);
+    loadAnimation(this, "golem", `${ASSETS_PATH}/sprites/enemies/golem`);
 
     // ╭──────────────────────────────────────────────────────────╮
     // │                          Towers                          │
