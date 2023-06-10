@@ -1,5 +1,4 @@
 import GameScene from "../scenes/GameScene";
-import { isMouseOnTopOfPath } from "../utils";
 import Enemy from "./Enemy";
 import HealthBar from "./HealthBar";
 
@@ -45,7 +44,7 @@ class Barrier extends Phaser.GameObjects.Rectangle {
     if (!this.active || !enemy.active) return false;
 
     return Phaser.Geom.Intersects.RectangleToRectangle(
-      enemy.follower.getBounds(),
+      enemy.getBounds(),
       this.getBounds()
     );
   }
@@ -58,21 +57,21 @@ class Barrier extends Phaser.GameObjects.Rectangle {
   static dragAndDrop(scene: GameScene, button: Phaser.GameObjects.Image) {
     var barrier: Barrier;
 
-
     button.on("dragstart", ({ x, y }: Phaser.Input.Pointer) => {
       barrier = new Barrier(scene, x, y).setInteractive({ cursor: "pointer" });
       scene.input.setDraggable(barrier);
     });
     button.on("drag", ({ x, y }: Phaser.Input.Pointer) => {
-      if (isMouseOnTopOfPath(scene.path, x, y)) {
-        scene.input.setDefaultCursor('grabbing');
+      if (scene.isMouseOnTopOfPath(x, y)) {
+        scene.input.setDefaultCursor("grabbing");
       } else {
-        scene.input.setDefaultCursor('not-allowed');
+        scene.input.setDefaultCursor("not-allowed");
       }
       barrier.setPosition(x, y);
     });
     button.on("dragend", () => {
-      if (!isMouseOnTopOfPath(scene.path, barrier.x, barrier.y)) return barrier.dispose();
+      if (!scene.isMouseOnTopOfPath(barrier.x, barrier.y))
+        return barrier.dispose();
 
       scene.input.setDefaultCursor("default");
       barrier.enable();

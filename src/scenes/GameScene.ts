@@ -1,8 +1,16 @@
-import { PATH_LEVEL_1, enemy1, enemy2, enemy3 } from '../constants';
-import Barrier from '../sprites/Barrier';
-import Enemy from '../sprites/Enemy';
-import Tower from '../sprites/Tower';
-import Hud from './components/Hud';
+import {
+  PATH_LEVEL_1,
+  skeleton1,
+  skeleton2,
+  skeleton3,
+  ork1,
+  golem,
+  ork3,
+} from "../constants";
+import Barrier from "../sprites/Barrier";
+import Enemy from "../sprites/Enemy";
+import Tower from "../sprites/Tower";
+import Hud from "./components/Hud";
 
 class GameScene extends Phaser.Scene {
   public enemies!: Enemy[];
@@ -15,10 +23,9 @@ class GameScene extends Phaser.Scene {
   private HUD!: Hud;
 
   constructor() {
-    super({ key: 'GameScene' });
+    super({ key: "GameScene" });
     this.path = this.generatePath(PATH_LEVEL_1);
   }
-
   init() {
     this.enemies = [];
     this.towers = [];
@@ -28,12 +35,11 @@ class GameScene extends Phaser.Scene {
   }
 
   create() {
-    const map = this.make.tilemap({ key: 'level1' });
-    const tileset = map.addTilesetImage('ground-tiles', 'tiles');
-    map.createLayer('Tile Layer 1', tileset!, 0, -220)!; // nem me pergunta pq desse -220
-    this.spawnEnemy();
+    const map = this.make.tilemap({ key: "level1" });
+    const tileset = map.addTilesetImage("ground-tiles", "tiles");
+    map.createLayer("Tile Layer 1", tileset!, 0, -220)!; // nem me pergunta pq desse -220
 
-    this.events.on('enemy-killed', (enemy: Enemy) => {
+    this.events.on("enemy-killed", (enemy: Enemy) => {
       // Evita que o inimigo seja contabilizado mais de uma vez
       // se o inimigo não tiver recompensa, quer dizer que ele já foi contabilizado
       if (enemy.reward === 0) return;
@@ -42,18 +48,23 @@ class GameScene extends Phaser.Scene {
       this.HUD.updateGold(this.gold);
     });
 
-    this.events.on('enemy-reached-end', (enemy: Enemy) => {
+    this.events.on("enemy-reached-end", (enemy: Enemy) => {
       this.health -= enemy.damage;
       this.HUD.updateHealthBar(this.health);
 
-      if (this.health <= 0) this.scene.start('GameOverScene');
+      if (this.health <= 0) this.scene.start("GameOverScene");
     });
 
+    this.spawnEnemy();  // Começa a spawnar inimigos
     // ╭──────────────────────────────────────────────────────────╮
     // │                          debug                           │
     // ╰──────────────────────────────────────────────────────────╯
-    // this.enemies.push(new Enemy(this, enemy1));
-    // this.enemies.push(new Enemy(this, enemy1));
+    this.health = 99999;
+    this.gold = 9999;
+    // this.barrier = new Barrier(this, 400, 700, 10000)
+    // this.barrier.enable();
+    // this.enemies.push(new Enemy(this, golem));
+    // this.enemies.push(new Enemy(this, ork1));
   }
 
   spawnEnemy() {
@@ -62,7 +73,10 @@ class GameScene extends Phaser.Scene {
 
     this.time.delayedCall(baseDelay + Math.random() * variableDelay, () => {
       this.enemies.push(
-        new Enemy(this, Phaser.Utils.Array.GetRandom([enemy1, enemy2, enemy3]))
+        new Enemy(
+          this,
+          Phaser.Utils.Array.GetRandom([skeleton1, skeleton2, skeleton3, ork1, ork3, golem])
+        )
       );
       this.spawnEnemy();
     });
@@ -77,6 +91,13 @@ class GameScene extends Phaser.Scene {
     if (this.enemies.length === 30) return;
     for (const enemy of this.enemies) if (enemy.active) enemy.update();
     for (const tower of this.towers) tower.update();
+  }
+
+  isMouseOnTopOfPath(x: number, y: number, distance = 85.0) {
+    const point = this.path.getPoints();
+    return point.some(
+      (p) => Phaser.Math.Distance.Between(x, y, p.x, p.y) < distance
+    );
   }
 
   generatePath(points: any) {

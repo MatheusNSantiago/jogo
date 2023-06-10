@@ -1,9 +1,8 @@
-import GameScene from '../scenes/GameScene';
-import { isMouseOnTopOfPath } from '../utils';
-import Enemy from './Enemy';
+import GameScene from "../scenes/GameScene";
+import Enemy from "./Enemy";
 
 export interface TowerConfig {
-  type: 'archer' | 'castle' | 'knight-post';
+  type: "archer" | "castle" | "knight-post";
   range: number;
   damage: number;
   cost: number;
@@ -26,7 +25,7 @@ export default class Tower extends Phaser.GameObjects.Image {
     y: number,
     { type, range, damage, cost }: TowerConfig
   ) {
-    super(scene, x, y, 'towers', `${type}-tower-front.png`);
+    super(scene, x, y, "towers", `${type}-tower-front.png`);
     this.radius = range;
     this.enemies = scene.enemies;
     this.damage = damage;
@@ -43,14 +42,14 @@ export default class Tower extends Phaser.GameObjects.Image {
       .circle(this.x, this.y, this.radius, 0x1a73e8, 0.3)
       .setDepth(99);
 
-    this.on('pointerover', () => this.radiusArc.setVisible(true));
-    this.on('pointerout', () => this.radiusArc.setVisible(false));
+    this.on("pointerover", () => this.radiusArc.setVisible(true));
+    this.on("pointerout", () => this.radiusArc.setVisible(false));
   }
 
   enable() {
     this.setActive(true);
     this.radiusArc.setVisible(false);
-    this.input!.cursor = 'pointer';
+    this.input!.cursor = "pointer";
   }
 
   update() {
@@ -98,13 +97,13 @@ export default class Tower extends Phaser.GameObjects.Image {
         targets: this.missile,
         x: this.target.x,
         y: this.target.y,
-        ease: 'Linear',
+        ease: "Linear",
         duration: 300,
         onComplete: () => {
           this.target?.hurt(this.damage);
           this.missile.setVisible(false);
           if (this.target?.isDead()) {
-            this.scene.events.emit('enemy-killed', this.target);
+            this.scene.events.emit("enemy-killed", this.target);
             this.target = undefined;
           }
         },
@@ -129,25 +128,25 @@ export default class Tower extends Phaser.GameObjects.Image {
     towerConfig: TowerConfig
   ) {
     var tower: Tower;
-    button.on('dragstart', ({ x, y }: Phaser.Input.Pointer) => {
+    button.on("dragstart", ({ x, y }: Phaser.Input.Pointer) => {
       tower = new Tower(scene, x, y, towerConfig);
-      tower.setInteractive({ cursor: 'grabbing' });
+      tower.setInteractive({ cursor: "grabbing" });
       scene.input.setDraggable(tower);
     });
-    button.on('drag', ({ x, y }: Phaser.Input.Pointer) => {
-      if (isMouseOnTopOfPath(scene.path, x, y)) {
-        scene.input.setDefaultCursor('not-allowed');
+    button.on("drag", ({ x, y }: Phaser.Input.Pointer) => {
+      if (scene.isMouseOnTopOfPath(x, y)) {
+        scene.input.setDefaultCursor("not-allowed");
       } else {
-        scene.input.setDefaultCursor('grabbing');
+        scene.input.setDefaultCursor("grabbing");
       }
 
       tower.setPosition(x, y);
       tower.update();
     });
-    button.on('dragend', ({ x, y }: Phaser.Input.Pointer) => {
-      scene.input.setDefaultCursor('default');
+    button.on("dragend", ({ x, y }: Phaser.Input.Pointer) => {
+      scene.input.setDefaultCursor("default");
 
-      if (isMouseOnTopOfPath(scene.path, x, y) || scene.gold < tower.cost)
+      if (scene.isMouseOnTopOfPath(x, y) || scene.gold < tower.cost)
         return tower.dispose();
 
       tower.enable();
