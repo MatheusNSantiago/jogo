@@ -1,4 +1,9 @@
-import { ARCHER_TOWER, CANVAS_HEIGHT, CASTLE_TOWER, KNIGHT_FORT } from "../../constants";
+import {
+  ARCHER_TOWER,
+  CANVAS_HEIGHT,
+  CASTLE_TOWER,
+  KNIGHT_FORT,
+} from "../../constants";
 import Barrier from "../../sprites/Barrier";
 import Bomb from "../../sprites/Bomb";
 import GameScene from "../GameScene";
@@ -9,6 +14,7 @@ class Hud extends Phaser.GameObjects.Container {
 
   private dockButtonsCount = 0;
   private goldText: Phaser.GameObjects.Text;
+  private energyText: Phaser.GameObjects.Text;
   private healthBar: Phaser.GameObjects.Sprite;
   private initialHealth: number;
 
@@ -18,7 +24,8 @@ class Hud extends Phaser.GameObjects.Container {
     this.scene.add.image(1000, 500, "tower-cost-button");
 
     this.healthBar = this.makeHealthBar(10, 35);
-    this.goldText = this.makeGoldCounter(scene.gold, 20, 130);
+    this.goldText = this.makeCounter(scene.gold, 20, 230, "gold.png");
+    this.energyText = this.makeCounter(scene.energy, 20, 130, "energy.png");
 
     this.addTowerDockButton(ARCHER_TOWER);
     this.addTowerDockButton(CASTLE_TOWER);
@@ -30,6 +37,10 @@ class Hud extends Phaser.GameObjects.Container {
 
   updateGold(gold: number) {
     this.goldText.setText(gold.toString()).setDepth(100);
+  }
+
+  updateEnergy(energy: number) {
+    this.energyText.setText(energy.toString()).setDepth(100);
   }
 
   updateHealthBar(health: number) {
@@ -53,11 +64,13 @@ class Hud extends Phaser.GameObjects.Container {
       .setDepth(101);
   }
 
-  private makeGoldCounter(initialGold: number, x: number, y: number) {
-    this.scene.add
-      .sprite(x, y, "hud", "gold.png")
-      .setOrigin(0, 0)
-      .setDepth(100);
+  private makeCounter(
+    initialGold: number,
+    x: number,
+    y: number,
+    sprite: string
+  ) {
+    this.scene.add.sprite(x, y, "hud", sprite).setOrigin(0, 0).setDepth(100);
 
     return this.scene.add
       .text(x + 65, y + 20, initialGold.toString(), {

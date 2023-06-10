@@ -20,6 +20,7 @@ class GameScene extends Phaser.Scene {
 
   public health!: number;
   public gold!: number;
+  public energy!: number;
   private HUD!: Hud;
 
   constructor() {
@@ -29,6 +30,7 @@ class GameScene extends Phaser.Scene {
   init() {
     this.enemies = [];
     this.towers = [];
+    this.energy = 20;
     this.gold = 100;
     this.health = 60;
     this.HUD = new Hud(this);
@@ -55,7 +57,7 @@ class GameScene extends Phaser.Scene {
       if (this.health <= 0) this.scene.start("GameOverScene");
     });
 
-    this.spawnEnemy();  // Começa a spawnar inimigos
+    this.spawnEnemy(); // Começa a spawnar inimigos
     // ╭──────────────────────────────────────────────────────────╮
     // │                          debug                           │
     // ╰──────────────────────────────────────────────────────────╯
@@ -75,7 +77,14 @@ class GameScene extends Phaser.Scene {
       this.enemies.push(
         new Enemy(
           this,
-          Phaser.Utils.Array.GetRandom([skeleton1, skeleton2, skeleton3, ork1, ork3, golem])
+          Phaser.Utils.Array.GetRandom([
+            skeleton1,
+            skeleton2,
+            skeleton3,
+            ork1,
+            ork3,
+            golem,
+          ])
         )
       );
       this.spawnEnemy();
@@ -85,6 +94,11 @@ class GameScene extends Phaser.Scene {
   subtractGold(amount: number) {
     this.gold -= amount;
     this.HUD.updateGold(this.gold);
+  }
+
+  subtractEnergy(amount: number) {
+    this.energy -= amount;
+    this.HUD.updateEnergy(this.energy);
   }
 
   update() {

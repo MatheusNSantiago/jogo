@@ -6,13 +6,15 @@ class Barrier extends Phaser.GameObjects.Rectangle {
   declare scene: GameScene;
   hp: HealthBar;
   isHpVisible = false;
+  cost: number;
 
-  constructor(scene: GameScene, x: number, y: number, hp = 100) {
+  constructor(scene: GameScene, x: number, y: number, hp = 100, cost = 15) {
     super(scene, x, y, 200, 30, 0x663300);
     this.setDepth(2);
     this.setActive(false);
     this.hp = new HealthBar(scene, hp);
     this.hp.setVisible(false);
+    this.cost = cost;
 
     scene.add.existing(this);
   }
@@ -70,12 +72,16 @@ class Barrier extends Phaser.GameObjects.Rectangle {
       barrier.setPosition(x, y);
     });
     button.on("dragend", () => {
-      if (!scene.isMouseOnTopOfPath(barrier.x, barrier.y))
+      if (
+        !scene.isMouseOnTopOfPath(barrier.x, barrier.y) ||
+        scene.energy < barrier.cost
+      )
         return barrier.dispose();
 
       scene.input.setDefaultCursor("default");
       barrier.enable();
       scene.barrier = barrier;
+      scene.subtractEnergy(barrier.cost);
     });
   }
 }

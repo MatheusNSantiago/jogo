@@ -5,19 +5,22 @@ class Bomb extends Phaser.GameObjects.Arc {
   declare scene: GameScene;
   damage: number;
   radius: number;
+  cost: number;
 
   constructor(
     scene: GameScene,
     x: number,
     y: number,
     radius = 500,
-    damage = 350
+    damage = 350,
+    cost = 20
   ) {
     super(scene, x, y, radius, 0, 360, false, 0xff0000, 0.3);
 
     this.setDepth(2);
     this.damage = damage;
     this.radius = radius;
+    this.cost = cost;
 
     scene.add.existing(this);
   }
@@ -69,6 +72,9 @@ class Bomb extends Phaser.GameObjects.Arc {
       bomb.setPosition(x, y);
     });
     button.on("dragend", () => {
+      if (scene.energy < bomb.cost) return bomb.destroy();
+      scene.subtractEnergy(bomb.cost);
+
       scene.input.setDefaultCursor("default");
       bomb.explode();
     });
