@@ -8,7 +8,7 @@ const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   height: CANVAS_HEIGHT,
   width: CANVAS_WIDTH,
-  fps: { limit: 40 },
+  fps: { limit: 35 },
   transparent: true,
   scale: {
     parent: 'game',
