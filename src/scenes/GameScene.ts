@@ -6,11 +6,12 @@ import {
   ork1,
   golem,
   ork3,
+  ARCHER_TOWER,
 } from "../constants";
 import Barrier from "../sprites/Barrier";
 import Enemy from "../sprites/Enemy";
 import Tower from "../sprites/Tower";
-import Hud from "./components/Hud";
+import Hud from "../sprites/gui/Hud";
 
 class GameScene extends Phaser.Scene {
   public enemies!: Enemy[];
@@ -38,10 +39,12 @@ class GameScene extends Phaser.Scene {
   }
 
   create() {
+    /* cria o mapa */
     const map = this.make.tilemap({ key: "level1" });
     const tileset = map.addTilesetImage("ground-tiles", "tiles");
     map.createLayer("Tile Layer 1", tileset!, 0, -220)!; // nem me pergunta pq desse -220
 
+    /* Adiciona gold ao matar inimigo */
     this.events.on("enemy-killed", (enemy: Enemy) => {
       // Evita que o inimigo seja contabilizado mais de uma vez
       // se o inimigo não tiver recompensa, quer dizer que ele já foi contabilizado
@@ -51,6 +54,7 @@ class GameScene extends Phaser.Scene {
       this.HUD.updateGold(this.gold);
     });
 
+    /* Tira a vida do level e da Game over se acabar a vida */
     this.events.on("enemy-reached-end", (enemy: Enemy) => {
       this.health -= enemy.damage;
       this.HUD.updateHealthBar(this.health);
@@ -59,13 +63,14 @@ class GameScene extends Phaser.Scene {
     });
 
     this.spawnEnemy(); // Começa a spawnar inimigos
+    this.addEnergy(); // Começa a acrescentar energia
+
     // ╭──────────────────────────────────────────────────────────╮
     // │                          debug                           │
     // ╰──────────────────────────────────────────────────────────╯
-    this.addEnergy();
-    this.health = 99999;
-    this.gold = 9999;
-    this.energy = 9999;
+    // this.health = 99999;
+    // this.gold = 9999;
+    // this.energy = 9999;
     // this.barrier = new Barrier(this, 400, 700, 10000)
     // this.barrier.enable();
     // this.enemies.push(new Enemy(this, golem));
@@ -106,13 +111,13 @@ class GameScene extends Phaser.Scene {
     this.HUD.updateEnergy(this.energy);
   }
 
-  addEnergy () {
+  addEnergy() {
     const time = 10000;
     this.time.delayedCall(time, () => {
       this.energy += 5;
       this.HUD.updateEnergy(this.energy);
       this.addEnergy();
-    })
+    });
   }
 
   update() {
@@ -127,7 +132,7 @@ class GameScene extends Phaser.Scene {
     );
   }
 
-  generatePath(points: any) {
+  private generatePath(points: any) {
     const path = new Phaser.Curves.Path(points[0].x, points[0].y);
     for (const { x, y } of points.slice(1)) path.lineTo(x, y);
 
