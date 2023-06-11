@@ -5,7 +5,7 @@ export default class HealthBar extends Phaser.GameObjects.Graphics {
 
   constructor(scene: Phaser.Scene, total: number) {
     super(scene);
-    this.setDepth(1);
+    this.setDepth(80);
 
     this.total = total;
     this.value = total;

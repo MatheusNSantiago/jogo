@@ -6,6 +6,7 @@ class Bomb extends Phaser.GameObjects.Arc {
   damage: number;
   radius: number;
   cost: number;
+  private explosion: Phaser.GameObjects.Sprite;
 
   constructor(
     scene: GameScene,
@@ -16,6 +17,11 @@ class Bomb extends Phaser.GameObjects.Arc {
     cost = 20
   ) {
     super(scene, x, y, radius, 0, 360, false, 0xff0000, 0.3);
+    this.explosion = scene.add
+      .sprite(x, y, "explosion")
+      .setDisplaySize(radius * 5, radius * 5)
+      .setVisible(false)
+      .setDepth(30);
 
     this.setDepth(2);
     this.damage = damage;
@@ -32,20 +38,20 @@ class Bomb extends Phaser.GameObjects.Arc {
       this.y,
       this.radius - enemyMargin
     );
-
     const animation = useAnimation(this.scene, "Explosion", "explosion", {
       loop: false,
       frameRate: 15,
     });
-    const explosion = this.scene.add.sprite(this.x, this.y, "explosion");
-    explosion.setDisplaySize(this.radius * 5, this.radius * 5);
-    explosion.anims.play(animation);
 
+    // ╾───────────────────────────────────────────────────────────────────────────────────╼
+    this.explosion.setVisible(true);
+    this.explosion.setPosition(this.x, this.y);
+    this.explosion.anims.play(animation);
     // Espera até a bomba explodir (que é 1/4 da duração da animação)
     this.scene.time.delayedCall(animation.duration / 4, () => {
-      this.setVisible(false);
+      this.setVisible(false); // Esconde o indicador
 
-      // Da dano em todos os inimigos que estiverem dentro do raio
+      // Dá dano em todos os inimigos que estiverem dentro do raio
       for (const enemy of this.scene.enemies) {
         const isInRange = Phaser.Geom.Intersects.CircleToRectangle(
           bombBounds,
@@ -54,10 +60,13 @@ class Bomb extends Phaser.GameObjects.Arc {
         if (isInRange) enemy.hurt(this.damage);
       }
     });
-    explosion.on("animationcomplete", () => {
-      explosion.destroy();
-      this.destroy();
-    });
+
+    this.explosion.on("animationcomplete", () => this.dispose());
+  }
+
+  dispose() {
+    this.explosion.destroy();
+    this.destroy();
   }
 
   static dragAndDrop(scene: GameScene, button: Phaser.GameObjects.Image) {
@@ -72,10 +81,10 @@ class Bomb extends Phaser.GameObjects.Arc {
       bomb.setPosition(x, y);
     });
     button.on("dragend", () => {
-      if (scene.energy < bomb.cost) return bomb.destroy();
-      scene.subtractEnergy(bomb.cost);
-
       scene.input.setDefaultCursor("default");
+      if (scene.energy < bomb.cost) return bomb.dispose();
+
+      scene.subtractEnergy(bomb.cost);
       bomb.explode();
     });
   }

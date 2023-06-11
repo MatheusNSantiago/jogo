@@ -17,6 +17,7 @@ class GameScene extends Phaser.Scene {
   public towers!: Tower[];
   public barrier?: Barrier;
   public path: Phaser.Curves.Path;
+  public maxQuantityOfEnemies = 30;
 
   public health!: number;
   public gold!: number;
@@ -64,6 +65,7 @@ class GameScene extends Phaser.Scene {
     this.addEnergy();
     this.health = 99999;
     this.gold = 9999;
+    this.energy = 9999;
     // this.barrier = new Barrier(this, 400, 700, 10000)
     // this.barrier.enable();
     // this.enemies.push(new Enemy(this, golem));
@@ -73,6 +75,8 @@ class GameScene extends Phaser.Scene {
   spawnEnemy() {
     const baseDelay = 1000;
     const variableDelay = 8000;
+
+    if (this.enemies.length === this.maxQuantityOfEnemies) return;
 
     this.time.delayedCall(baseDelay + Math.random() * variableDelay, () => {
       this.enemies.push(
@@ -112,7 +116,6 @@ class GameScene extends Phaser.Scene {
   }
 
   update() {
-    if (this.enemies.length === 30) return;
     for (const enemy of this.enemies) if (enemy.active) enemy.update();
     for (const tower of this.towers) tower.update();
   }
