@@ -80,7 +80,8 @@ export const ork3: EnemyConfig = {
 
 const golemNoise = {
   dx: { lower: 0, upper: 0 },
-  dy: { lower: -40.0, upper: 0 },
+  // a sprite do gollem é muito grande, então eu puxei ela pra cima pra não ficar esquisito
+  dy: { lower: -40.0, upper: -40.0 },
 };
 
 export const golem: EnemyConfig = {
