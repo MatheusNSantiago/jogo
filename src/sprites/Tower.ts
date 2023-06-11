@@ -1,5 +1,6 @@
 import GameScene from "../scenes/GameScene";
 import Enemy from "./Enemy";
+import TowerUpgrade from "./gui/TowerUpgrade";
 
 export interface TowerConfig {
   type: "archer" | "castle" | "knight-post";
@@ -11,28 +12,23 @@ export interface TowerConfig {
 export default class Tower extends Phaser.GameObjects.Image {
   declare scene: GameScene;
   missile: Phaser.GameObjects.Arc;
-  radius: number;
   radiusArc: Phaser.GameObjects.Arc;
+  towerUpgradePopup: TowerUpgrade;
+  radius: number;
   damage = 20;
   cost: number;
 
-  enemies: Enemy[];
   target?: Enemy;
 
-  constructor(
-    scene: GameScene,
-    x: number,
-    y: number,
-    { type, range, damage, cost }: TowerConfig
-  ) {
-    super(scene, x, y, "towers", `${type}-tower-front.png`);
-    this.radius = range;
-    this.enemies = scene.enemies;
-    this.damage = damage;
-    this.cost = cost;
-    this.setActive(false);
+  constructor(scene: GameScene, x: number, y: number, config: TowerConfig) {
+    super(scene, x, y, "towers", `${config.type}-tower-front.png`);
+    this.radius = config.range;
+    this.damage = config.damage;
+    this.cost = config.cost;
+    this.towerUpgradePopup = new TowerUpgrade(scene);
 
     this.scene.add.existing(this);
+    this.setActive(false);
 
     this.missile = this.scene.add
       .circle(0, 0, 10, 0x0000ff, 1)
@@ -44,6 +40,7 @@ export default class Tower extends Phaser.GameObjects.Image {
 
     this.on("pointerover", () => this.radiusArc.setVisible(true));
     this.on("pointerout", () => this.radiusArc.setVisible(false));
+    this.on("pointerdown", () => this.towerUpgradePopup.setVisible(true));
   }
 
   enable() {
@@ -54,13 +51,15 @@ export default class Tower extends Phaser.GameObjects.Image {
 
   update() {
     if (!this.active) {
-      return this.radiusArc.setPosition(this.x, this.y);
+      this.radiusArc.setPosition(this.x, this.y);
+      this.towerUpgradePopup.mover(this.x, this.y);
+      return;
     }
 
     const needsToFindNewTarget =
       this.target === undefined || this.target.isDead();
     if (needsToFindNewTarget) {
-      for (const enemy of this.enemies) {
+      for (const enemy of this.scene.enemies) {
         if (!enemy.isDead() && this.isTargetInRange(enemy)) {
           this.target = enemy;
           this.scene.time.addEvent({
@@ -100,9 +99,10 @@ export default class Tower extends Phaser.GameObjects.Image {
         ease: "Linear",
         duration: 300,
         onComplete: () => {
-          this.target?.hurt(this.damage);
           this.missile.setVisible(false);
-          if (this.target?.isDead()) {
+          if (this.target == undefined) return;
+          this.target.hurt(this.damage);
+          if (this.target.isDead()) {
             this.scene.events.emit("enemy-killed", this.target);
             this.target = undefined;
           }

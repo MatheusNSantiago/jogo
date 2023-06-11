@@ -36,6 +36,8 @@ class BootScene extends Phaser.Scene {
       `${ASSETS_PATH}/sprites/towers/towers.json`
     );
 
+    this.load.image("tower-upgrade", `${ASSETS_PATH}/sprites/gui/tower-upgrade.png`);
+
     // ╭──────────────────────────────────────────────────────────╮
     // │                        Power Ups                         │
     // ╰──────────────────────────────────────────────────────────╯
