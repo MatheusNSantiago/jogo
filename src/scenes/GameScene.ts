@@ -61,6 +61,7 @@ class GameScene extends Phaser.Scene {
     // ╭──────────────────────────────────────────────────────────╮
     // │                          debug                           │
     // ╰──────────────────────────────────────────────────────────╯
+    this.addEnergy();
     this.health = 99999;
     this.gold = 9999;
     // this.barrier = new Barrier(this, 400, 700, 10000)
@@ -99,6 +100,15 @@ class GameScene extends Phaser.Scene {
   subtractEnergy(amount: number) {
     this.energy -= amount;
     this.HUD.updateEnergy(this.energy);
+  }
+
+  addEnergy () {
+    const time = 10000;
+    this.time.delayedCall(time, () => {
+      this.energy += 5;
+      this.HUD.updateEnergy(this.energy);
+      this.addEnergy();
+    })
   }
 
   update() {
