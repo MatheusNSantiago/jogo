@@ -35,13 +35,12 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   follower: Phaser.GameObjects.PathFollower;
   target?: Barrier;
 
-
   constructor(scene: GameScene, config: EnemyConfig) {
     super(scene, 0, 0, config.texture);
     this.config = config;
     this.textureID = config.texture;
     this.velocity = config.velocity;
-    this.hp = new HealthBar(scene, config.hp);
+    this.hp = new HealthBar(scene, config.hp).setVisible(false);
     this.reward = config.reward;
     this.damage = config.damage;
     this.attackSpeed = config.attackSpeed;
@@ -56,7 +55,9 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
         this.path.startPoint.y,
         this.textureID
       )
-      .setScale(config.scale);
+      .setScale(config.scale)
+      // Os que foram criados primeiro ficam na frente
+      .setDepth(this.scene.maxQuantityOfEnemies - this.scene.enemies.length);
 
     this.follower.startFollow({
       duration: (this.path.getLength() / this.velocity) * 1000,
@@ -80,7 +81,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   isDead() {
-    return this.state === "dead" || this.state === "dying";
+    return this.state === "dead" || this.state === "dying" || !this.active;
   }
 
   update() {
@@ -94,6 +95,10 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
       this.attack();
     }
 
+    // Se ele levar dano, mostra o hp
+    const hasTakenDamage = this.hp.value < this.hp.total;
+    if (hasTakenDamage && !this.hp.visible) this.hp.setVisible(true);
+
     this.hp.draw(this.x, this.y);
     if (isPathCompleted) {
       this.scene.events.emit("enemy-reached-end", this);
@@ -101,11 +106,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
     }
 
     this.setPosition(this.follower.x, this.follower.y);
-    this.follower.setPosition(
-      this.follower.x,
-      this.follower.y
-    );
-
+    this.follower.setPosition(this.follower.x, this.follower.y);
   }
 
   walk() {
