@@ -24,6 +24,7 @@ class GameScene extends Phaser.Scene {
   public gold!: number;
   public energy!: number;
   private HUD!: Hud;
+  private waves!: any[]
 
   constructor() {
     super({ key: 'GameScene' });
@@ -36,6 +37,7 @@ class GameScene extends Phaser.Scene {
     this.gold = 100;
     this.health = 60;
     this.HUD = new Hud(this);
+    this.waves = this.cache.json.get('level1-waves')['wave']
   }
 
   create() {
@@ -61,8 +63,8 @@ class GameScene extends Phaser.Scene {
 
       if (this.health <= 0) this.scene.start('GameOverScene');
     });
-
-    this.time.delayedCall(3000, () => this.spawnEnemy()); // Começa a spawnar inimigos
+    //this.faseAlert("fase1");
+    this.time.delayedCall(3000, () => this.spawnEnemy(0)); // Começa a spawnar inimigos
     this.addEnergy(); // Começa a acrescentar energia
 
     // ╭──────────────────────────────────────────────────────────╮
@@ -77,29 +79,35 @@ class GameScene extends Phaser.Scene {
     // this.enemies.push(new Enemy(this, ork1));
   }
 
-  spawnEnemy() {
-    const json = this.cache.json.get('level1-waves');
-    var wave = json['wave'];
-
-    this.foo(wave);
+  spawnEnemy(waveNumber: number) {
+    if(this.waves.length > waveNumber){
+      this.faseAlert('wave ' + (waveNumber+1))
+      this.foo(waveNumber);
+    }else {
+      return this.scene.start('LevelCompleteScene');
+    }
+    
   }
 
-  foo(pilha: any[]) {
-    console.log(pilha.length);
-    var cd_base = 100;
+  foo(waveNumber: number) {
+    console.log(this.waves[waveNumber].length);
+    var cd_base = 1000;
 
-    if (pilha.length !== 0) {
-      const { enemy, cd } = pilha.shift();
+    if (this.waves[waveNumber].length !== 0) {
+      const { enemy, cd } = this.waves[waveNumber].shift();
       cd_base = cd;
       this.choseEnemy(enemy);
     }
     
     const naoTemInimigoVivo = this.enemies.every((enemy) => enemy.isDead());
     if (naoTemInimigoVivo) {
-      return this.scene.start('LevelCompleteScene');
+      //return this.scene.start('LevelCompleteScene');
+      return this.time.delayedCall(1000,() => {
+        this.spawnEnemy(waveNumber+1)
+      });
     }
 
-    this.time.delayedCall(cd_base, () => this.foo(pilha));
+    this.time.delayedCall(cd_base, () => this.foo(waveNumber));
   }
 
   choseEnemy(enemy: string) {
@@ -127,6 +135,23 @@ class GameScene extends Phaser.Scene {
     }
   }
 
+  faseAlert(text: string) {
+    var larguraTela = this.cameras.main.width;
+    var alturaTela = this.cameras.main.height;
+
+    // Crie o texto para o alerta de início de fase
+    var textoFase = this.add.text(larguraTela / 2, alturaTela / 2, text, {
+      fontFamily: 'Arial',
+      fontSize: '200px',
+      color: 'green'
+    });
+    textoFase.setOrigin(0.5);
+
+    // Defina um temporizador para remover o texto após alguns segundos
+    this.time.delayedCall(3000,() => {
+      textoFase.destroy();
+    });
+  }
 
   subtractGold(amount: number) {
     this.gold -= amount;

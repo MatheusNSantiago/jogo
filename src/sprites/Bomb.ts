@@ -58,6 +58,9 @@ class Bomb extends Phaser.GameObjects.Arc {
           enemy.getBounds()
         );
         if (isInRange) enemy.hurt(this.damage);
+        if (isInRange && enemy.isDead()) {
+          this.scene.events.emit('enemy-killed', enemy);
+        }
       }
     });
 
