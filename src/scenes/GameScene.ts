@@ -86,42 +86,47 @@ class GameScene extends Phaser.Scene {
 
   foo(pilha: any[]) {
     console.log(pilha.length);
+    var cd_base = 100;
 
     if (pilha.length !== 0) {
       const { enemy, cd } = pilha.shift();
-
-      switch (enemy) {
-        case 'skeleton1':
-          this.enemies.push(new Enemy(this, skeleton1));
-          break;
-        case 'skeleton2':
-          this.enemies.push(new Enemy(this, skeleton2));
-          break;
-        case 'skeleton3':
-          this.enemies.push(new Enemy(this, skeleton2));
-          break;
-        case 'ork1':
-          this.enemies.push(new Enemy(this, ork1));
-          break;
-        case 'ork3':
-          this.enemies.push(new Enemy(this, ork3));
-          break;
-        case 'golem':
-          this.enemies.push(new Enemy(this, golem));
-          break;
-        default:
-          break;
-      }
-      this.time.delayedCall(cd, () => this.foo(pilha));
+      cd_base = cd;
+      this.choseEnemy(enemy);
     }
-
-    this.time.delayedCall(2000, () => this.foo(pilha));
+    
     const naoTemInimigoVivo = this.enemies.every((enemy) => enemy.isDead());
     if (naoTemInimigoVivo) {
       return this.scene.start('LevelCompleteScene');
     }
 
+    this.time.delayedCall(cd_base, () => this.foo(pilha));
   }
+
+  choseEnemy(enemy: string) {
+    switch (enemy) {
+      case 'skeleton1':
+        this.enemies.push(new Enemy(this, skeleton1));
+        break;
+      case 'skeleton2':
+        this.enemies.push(new Enemy(this, skeleton2));
+        break;
+      case 'skeleton3':
+        this.enemies.push(new Enemy(this, skeleton2));
+        break;
+      case 'ork1':
+        this.enemies.push(new Enemy(this, ork1));
+        break;
+      case 'ork3':
+        this.enemies.push(new Enemy(this, ork3));
+        break;
+      case 'golem':
+        this.enemies.push(new Enemy(this, golem));
+        break;
+      default:
+        break;
+    }
+  }
+
 
   subtractGold(amount: number) {
     this.gold -= amount;

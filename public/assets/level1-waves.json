@@ -18,7 +18,7 @@
         },
         {
             "enemy": "skeleton1",
-            "cd": 4000
+            "cd": 8000
         },
         {
             "enemy": "skeleton2",
@@ -62,11 +62,11 @@
         },
         {
             "enemy": "ork2",
-            "cd": 3000
+            "cd": 6000
         },
         {
             "enemy": "skeleton2",
-            "cd": 1000
+            "cd": 4000
         },
         {
             "enemy": "skeleton1",
