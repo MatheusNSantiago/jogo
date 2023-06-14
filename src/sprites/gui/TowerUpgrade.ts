@@ -1,4 +1,4 @@
-import GameScene from "../../scenes/GameScene";
+import GameScene from '../../scenes/GameScene';
 
 class TowerUpgrade extends Phaser.GameObjects.Container {
   declare scene: GameScene;
@@ -12,18 +12,18 @@ class TowerUpgrade extends Phaser.GameObjects.Container {
     super(scene);
 
     this.upgradePopup = scene.add
-      .image(this.x, this.y, "tower-upgrade")
+      .image(this.x, this.y, 'tower-upgrade')
       .setDepth(1000)
       .setScale(2.3)
       .setVisible(false);
 
-    this.optionTopLeft = this.addOption("X2 \ndano", 100);
-    this.optionTopRight = this.addOption("X1.5 \nalcance", 100);
-    this.optionBottomLeft = this.addOption("X2 \ndano", 100);
-    this.optionBottomRight = this.addOption("X2 \ndano", 100);
+    this.optionTopLeft = this.addOption('X2 \ndano', 100);
+    this.optionTopRight = this.addOption('X1.5 \nalcance', 100);
+    this.optionBottomLeft = this.addOption('X2 \ndano', 100);
+    this.optionBottomRight = this.addOption('X2 \ndano', 100);
 
-    // If the user clicks outside the popup, hide it.
-    this.scene.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+    // Se o usuário clicar fora do popup, esconda o popup
+    this.scene.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
       if (!this.upgradePopup.getBounds().contains(pointer.x, pointer.y)) {
         this.setVisible(false);
       }
@@ -56,37 +56,43 @@ class TowerUpgrade extends Phaser.GameObjects.Container {
     this.destroy();
   }
 
-  addOption(description: string, cost: number) {
-    const box = this.scene.add.rectangle(0, 0, 154, 152).setVisible(false)
+  private addOption(description: string, cost: number) {
+    const box = this.scene.add.rectangle(0, 0, 154, 152).setVisible(false);
     const boxBounds = box.getBounds();
 
     const descriptionText = this.scene.add.text(0, 0, description, {
-      fontFamily: "Arial",
-      color: "#fff",
+      fontFamily: 'Arial',
+      color: '#fff',
       fontSize: 33.5,
-      align: "center",
-      stroke: "#000000",
+      align: 'center',
+      stroke: '#000000',
       strokeThickness: 4,
     });
-    descriptionText.setPosition(boxBounds.centerX - descriptionText.width / 2, boxBounds.centerY - descriptionText.height / 1.35)
+    descriptionText.setPosition(
+      boxBounds.centerX - descriptionText.width / 2,
+      boxBounds.centerY - descriptionText.height / 1.35
+    );
 
     const costText = this.scene.add.text(0, 0, cost.toString(), {
-      fontFamily: "Arial",
+      fontFamily: 'Arial',
       fontSize: 30,
-      color: "#ffffff",
-      stroke: "#000000",
+      color: '#ffffff',
+      stroke: '#000000',
       strokeThickness: 4,
     });
-    costText.setPosition(boxBounds.centerX - costText.width / 2, boxBounds.bottom - costText.height - 2.5)
+    costText.setPosition(
+      boxBounds.centerX - costText.width / 2,
+      boxBounds.bottom - costText.height - 2.5
+    );
 
     return this.scene.add
-      .container(this.x, this.y, [
-        box,
-        descriptionText,
-        costText,
-      ])
+      .container(this.x, this.y, [box, descriptionText, costText])
       .setDepth(1001)
-      .setVisible(false);
+      .setVisible(false)
+      .setSize(box.width, box.height)
+      .setInteractive({cursor: 'pointer'})
+      .on('pointerdown', () => {
+      });
   }
 }
 export default TowerUpgrade;
