@@ -7,11 +7,11 @@ import {
   golem,
   ork3,
   ARCHER_TOWER,
-} from "../constants";
-import Barrier from "../sprites/Barrier";
-import Enemy from "../sprites/Enemy";
-import Tower from "../sprites/Tower";
-import Hud from "../sprites/gui/Hud";
+} from '../constants';
+import Barrier from '../sprites/Barrier';
+import Enemy from '../sprites/Enemy';
+import Tower from '../sprites/Tower';
+import Hud from '../sprites/gui/Hud';
 
 class GameScene extends Phaser.Scene {
   public enemies!: Enemy[];
@@ -26,7 +26,7 @@ class GameScene extends Phaser.Scene {
   private HUD!: Hud;
 
   constructor() {
-    super({ key: "GameScene" });
+    super({ key: 'GameScene' });
     this.path = this.generatePath(PATH_LEVEL_1);
   }
   init() {
@@ -40,12 +40,12 @@ class GameScene extends Phaser.Scene {
 
   create() {
     /* cria o mapa */
-    const map = this.make.tilemap({ key: "level1" });
-    const tileset = map.addTilesetImage("ground-tiles", "tiles");
-    map.createLayer("Tile Layer 1", tileset!, 0, -220)!; // nem me pergunta pq desse -220
+    const map = this.make.tilemap({ key: 'level1' });
+    const tileset = map.addTilesetImage('ground-tiles', 'tiles');
+    map.createLayer('Tile Layer 1', tileset!, 0, -220)!; // nem me pergunta pq desse -220
 
     /* Adiciona gold ao matar inimigo */
-    this.events.on("enemy-killed", (enemy: Enemy) => {
+    this.events.on('enemy-killed', (enemy: Enemy) => {
       // Evita que o inimigo seja contabilizado mais de uma vez
       // se o inimigo não tiver recompensa, quer dizer que ele já foi contabilizado
       if (enemy.reward === 0) return;
@@ -55,14 +55,14 @@ class GameScene extends Phaser.Scene {
     });
 
     /* Tira a vida do level e da Game over se acabar a vida */
-    this.events.on("enemy-reached-end", (enemy: Enemy) => {
+    this.events.on('enemy-reached-end', (enemy: Enemy) => {
       this.health -= enemy.damage;
       this.HUD.updateHealthBar(this.health);
 
-      if (this.health <= 0) this.scene.start("GameOverScene");
+      if (this.health <= 0) this.scene.start('GameOverScene');
     });
 
-    this.spawnEnemy(); // Começa a spawnar inimigos
+    this.time.delayedCall(3000, () => this.spawnEnemy()); // Começa a spawnar inimigos
     this.addEnergy(); // Começa a acrescentar energia
 
     // ╭──────────────────────────────────────────────────────────╮
@@ -78,27 +78,49 @@ class GameScene extends Phaser.Scene {
   }
 
   spawnEnemy() {
-    const baseDelay = 1000;
-    const variableDelay = 8000;
+    const json = this.cache.json.get('level1-waves');
+    var wave = json['wave'];
 
-    if (this.enemies.length === this.maxQuantityOfEnemies) return;
+    this.foo(wave);
+  }
 
-    this.time.delayedCall(baseDelay + Math.random() * variableDelay, () => {
-      this.enemies.push(
-        new Enemy(
-          this,
-          Phaser.Utils.Array.GetRandom([
-            skeleton1,
-            skeleton2,
-            skeleton3,
-            ork1,
-            ork3,
-            golem,
-          ])
-        )
-      );
-      this.spawnEnemy();
-    });
+  foo(pilha: any[]) {
+    console.log(pilha.length);
+
+    if (pilha.length !== 0) {
+      const { enemy, cd } = pilha.shift();
+
+      switch (enemy) {
+        case 'skeleton1':
+          this.enemies.push(new Enemy(this, skeleton1));
+          break;
+        case 'skeleton2':
+          this.enemies.push(new Enemy(this, skeleton2));
+          break;
+        case 'skeleton3':
+          this.enemies.push(new Enemy(this, skeleton2));
+          break;
+        case 'ork1':
+          this.enemies.push(new Enemy(this, ork1));
+          break;
+        case 'ork3':
+          this.enemies.push(new Enemy(this, ork3));
+          break;
+        case 'golem':
+          this.enemies.push(new Enemy(this, golem));
+          break;
+        default:
+          break;
+      }
+      this.time.delayedCall(cd, () => this.foo(pilha));
+    }
+
+    this.time.delayedCall(2000, () => this.foo(pilha));
+    const naoTemInimigoVivo = this.enemies.every((enemy) => enemy.isDead());
+    if (naoTemInimigoVivo) {
+      return this.scene.start('LevelCompleteScene');
+    }
+
   }
 
   subtractGold(amount: number) {
