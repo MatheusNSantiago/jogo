@@ -18,6 +18,7 @@
     "vite": "^4.2.2"
   },
   "dependencies": {
-    "@enable3d/phaser-extension": "^0.25.3"
+    "@enable3d/phaser-extension": "^0.25.3",
+    "axios": "^1.4.0"
   }
 }
