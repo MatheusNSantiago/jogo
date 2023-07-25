@@ -6,7 +6,7 @@ class GameOverScene extends Phaser.Scene {
   create() {
     const { centerX, centerY } = this.cameras.main;
     this.add
-      .text(centerX, centerY - 150, 'VOCÊ É UMA VERGONHA', {
+      .text(centerX, centerY - 150, 'VOCÊ FRACASSOU', {
         color: '#0f0',
         fontSize: 80,
       })

@@ -6,7 +6,7 @@ class LevelCompleteScene extends Phaser.Scene {
   create() {
     const { centerX, centerY } = this.cameras.main;
     this.add
-      .text(centerX, centerY - 150, 'VOCÊ NÃO É UMA VERGONHA', {
+      .text(centerX, centerY - 150, 'VOCÊ CONSEGUIU, PARABÉNS!!', {
         color: '#0f0',
         fontSize: 80,
       })

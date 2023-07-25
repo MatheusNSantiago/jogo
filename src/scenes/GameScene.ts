@@ -7,6 +7,7 @@ import {
   golem,
   ork3,
   ARCHER_TOWER,
+  ork2,
 } from '../constants';
 import Barrier from '../sprites/Barrier';
 import Enemy from '../sprites/Enemy';
@@ -123,6 +124,9 @@ class GameScene extends Phaser.Scene {
         break;
       case 'ork1':
         this.enemies.push(new Enemy(this, ork1));
+        break;
+      case 'ork2':
+        this.enemies.push(new Enemy(this, ork2));
         break;
       case 'ork3':
         this.enemies.push(new Enemy(this, ork3));

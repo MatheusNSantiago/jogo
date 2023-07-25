@@ -28,7 +28,7 @@ const skeletonNoise = {
 
 export const skeleton1: EnemyConfig = {
   texture: "skeleton1",
-  hp: 75,
+  hp: 60,
   velocity: 180,
   reward: 20,
   damage: 15,
@@ -38,7 +38,7 @@ export const skeleton1: EnemyConfig = {
 
 export const skeleton2: EnemyConfig = {
   texture: "skeleton2",
-  hp: 85,
+  hp: 70,
   velocity: 180,
   reward: 25,
   damage: 18,
@@ -48,7 +48,7 @@ export const skeleton2: EnemyConfig = {
 
 export const skeleton3: EnemyConfig = {
   texture: "skeleton3",
-  hp: 100,
+  hp: 85,
   velocity: 180,
   reward: 35,
   damage: 20,
@@ -58,7 +58,18 @@ export const skeleton3: EnemyConfig = {
 
 export const ork1: EnemyConfig = {
   texture: "ork1",
-  hp: 300,
+  hp: 240,
+  velocity: 130,
+  reward: 50,
+  damage: 40,
+  attackSpeed: 1,
+  frameRate: 8,
+  scale: 0.57,
+};
+
+export const ork2: EnemyConfig = {
+  texture: "ork2",
+  hp: 270,
   velocity: 130,
   reward: 50,
   damage: 40,
@@ -69,7 +80,7 @@ export const ork1: EnemyConfig = {
 
 export const ork3: EnemyConfig = {
   texture: "ork3",
-  hp: 200,
+  hp: 300,
   velocity: 130,
   reward: 50,
   damage: 40,
@@ -86,7 +97,7 @@ const golemNoise = {
 
 export const golem: EnemyConfig = {
   texture: "golem",
-  hp: 300,
+  hp: 1000,
   velocity: 100,
   reward: 50,
   damage: 45,
@@ -103,20 +114,20 @@ export const golem: EnemyConfig = {
 export const ARCHER_TOWER: TowerConfig = {
   type: "archer",
   range: 500,
-  damage: 20,
+  damage: 25,
   cost: 100,
 };
 
 export const CASTLE_TOWER: TowerConfig = {
   type: "castle",
   range: 500,
-  damage: 20,
+  damage: 25,
   cost: 100,
 };
 
 export const KNIGHT_FORT: TowerConfig = {
   type: "knight-post",
   range: 500,
-  damage: 20,
+  damage: 25,
   cost: 100,
 };
