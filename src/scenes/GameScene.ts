@@ -4,15 +4,15 @@ import {
   skeleton2,
   skeleton3,
   ork1,
+  ork2,
   golem,
   ork3,
   ARCHER_TOWER,
-  ork2,
-} from '../constants';
-import Barrier from '../sprites/Barrier';
-import Enemy from '../sprites/Enemy';
-import Tower from '../sprites/Tower';
-import Hud from '../sprites/gui/Hud';
+} from "../constants";
+import Barrier from "../sprites/Barrier";
+import Enemy from "../sprites/Enemy";
+import Tower from "../sprites/Tower";
+import Hud from "../sprites/gui/Hud";
 
 class GameScene extends Phaser.Scene {
   public enemies!: Enemy[];
@@ -25,12 +25,13 @@ class GameScene extends Phaser.Scene {
   public gold!: number;
   public energy!: number;
   private HUD!: Hud;
-  private waves!: any[]
+  private waves!: any[];
 
   constructor() {
-    super({ key: 'GameScene' });
+    super({ key: "GameScene" });
     this.path = this.generatePath(PATH_LEVEL_1);
   }
+
   init() {
     this.enemies = [];
     this.towers = [];
@@ -38,17 +39,17 @@ class GameScene extends Phaser.Scene {
     this.gold = 100;
     this.health = 60;
     this.HUD = new Hud(this);
-    this.waves = this.cache.json.get('level1-waves')['wave']
+    this.waves = this.cache.json.get("level1-waves")["wave"];
   }
 
   create() {
     /* cria o mapa */
-    const map = this.make.tilemap({ key: 'level1' });
-    const tileset = map.addTilesetImage('ground-tiles', 'tiles');
-    map.createLayer('Tile Layer 1', tileset!, 0, -220)!; // nem me pergunta pq desse -220
+    const map = this.make.tilemap({ key: "level1" });
+    const tileset = map.addTilesetImage("ground-tiles", "tiles");
+    map.createLayer("Tile Layer 1", tileset!, 0, -220)!; // nem me pergunta pq desse -220
 
     /* Adiciona gold ao matar inimigo */
-    this.events.on('enemy-killed', (enemy: Enemy) => {
+    this.events.on("enemy-killed", (enemy: Enemy) => {
       // Evita que o inimigo seja contabilizado mais de uma vez
       // se o inimigo não tiver recompensa, quer dizer que ele já foi contabilizado
       if (enemy.reward === 0) return;
@@ -58,14 +59,14 @@ class GameScene extends Phaser.Scene {
     });
 
     /* Tira a vida do level e da Game over se acabar a vida */
-    this.events.on('enemy-reached-end', (enemy: Enemy) => {
+    this.events.on("enemy-reached-end", (enemy: Enemy) => {
       this.health -= enemy.damage;
       this.HUD.updateHealthBar(this.health);
 
-      if (this.health <= 0) this.scene.start('GameOverScene');
+      if (this.health <= 0) this.scene.start("GameOverScene");
     });
-    //this.faseAlert("fase1");
-    this.time.delayedCall(3000, () => this.spawnEnemy(0)); // Começa a spawnar inimigos
+
+    this.time.delayedCall(3000, () => this.startWave(0)); // Começa a spawnar inimigos
     this.addEnergy(); // Começa a acrescentar energia
 
     // ╭──────────────────────────────────────────────────────────╮
@@ -74,64 +75,70 @@ class GameScene extends Phaser.Scene {
     // this.health = 99999;
     // this.gold = 9999;
     // this.energy = 9999;
-    // this.barrier = new Barrier(this, 400, 700, 10000)
-    // this.barrier.enable();
-    // this.enemies.push(new Enemy(this, golem));
-    // this.enemies.push(new Enemy(this, ork1));
+    // new Tower(this, 700, 400, {
+    //     type: "archer",
+    //     range: 500,
+    //     damage: 20,
+    //     cost: 100,
+    // });
   }
 
-  spawnEnemy(waveNumber: number) {
-    if(this.waves.length > waveNumber){
-      this.faseAlert('wave ' + (waveNumber+1))
-      this.foo(waveNumber);
-    }else {
-      return this.scene.start('LevelCompleteScene');
+  startWave(waveNumber: number) {
+    const isLastWave = waveNumber === this.waves.length;
+    if (isLastWave) {
+      return this.scene.start("LevelCompleteScene");
     }
-    
+
+    this.faseAlert("wave " + (waveNumber + 1));
+    this.spawnEnemy(waveNumber);
   }
 
-  foo(waveNumber: number) {
-    console.log(this.waves[waveNumber].length);
-    var cd_base = 1000;
+  spawnEnemy(waveNumber: number, enemyIndex = 0) {
+    var cdBase = 1000;
 
-    if (this.waves[waveNumber].length !== 0) {
-      const { enemy, cd } = this.waves[waveNumber].shift();
-      cd_base = cd;
-      this.choseEnemy(enemy);
-    }
-    
-    const naoTemInimigoVivo = this.enemies.every((enemy) => enemy.isDead());
-    if (naoTemInimigoVivo) {
-      //return this.scene.start('LevelCompleteScene');
-      return this.time.delayedCall(1000,() => {
-        this.spawnEnemy(waveNumber+1)
-      });
+    const wave = this.waves[waveNumber];
+
+    let isNotLastEnemy = enemyIndex < wave.length;
+    if (isNotLastEnemy) {
+      const enemyInfo = wave[enemyIndex];
+
+      const { enemy, cd } = enemyInfo;
+
+      cdBase = cd;
+      this.choseEnemyToSpawn(enemy);
     }
 
-    this.time.delayedCall(cd_base, () => this.foo(waveNumber));
+    /* Começa uma wave nova se acabou a wave e tu matou todos */
+    const naoTemInimigoVivo = this.enemies.every((e) => e.isDead());
+    if (naoTemInimigoVivo && !isNotLastEnemy) {
+      return this.time.delayedCall(1000, () => this.startWave(waveNumber + 1));
+    }
+
+    /* Chama a função novamente para spawnar o próximo inimigo ou começar uma nova wave */
+    this.time.delayedCall(cdBase, () => this.spawnEnemy(waveNumber, enemyIndex + 1));
   }
 
-  choseEnemy(enemy: string) {
+  choseEnemyToSpawn(enemy: string) {
     switch (enemy) {
-      case 'skeleton1':
+      case "skeleton1":
         this.enemies.push(new Enemy(this, skeleton1));
         break;
-      case 'skeleton2':
+      case "skeleton2":
         this.enemies.push(new Enemy(this, skeleton2));
         break;
-      case 'skeleton3':
+      case "skeleton3":
         this.enemies.push(new Enemy(this, skeleton2));
         break;
-      case 'ork1':
+      case "ork1":
         this.enemies.push(new Enemy(this, ork1));
         break;
-      case 'ork2':
+      case "ork2":
         this.enemies.push(new Enemy(this, ork2));
         break;
-      case 'ork3':
+      case "ork3":
         this.enemies.push(new Enemy(this, ork3));
         break;
-      case 'golem':
+      case "golem":
         this.enemies.push(new Enemy(this, golem));
         break;
       default:
@@ -145,14 +152,14 @@ class GameScene extends Phaser.Scene {
 
     // Crie o texto para o alerta de início de fase
     var textoFase = this.add.text(larguraTela / 2, alturaTela / 2, text, {
-      fontFamily: 'Arial',
-      fontSize: '200px',
-      color: 'green'
+      fontFamily: "Arial",
+      fontSize: "200px",
+      color: "green",
     });
     textoFase.setOrigin(0.5);
 
     // Defina um temporizador para remover o texto após alguns segundos
-    this.time.delayedCall(3000,() => {
+    this.time.delayedCall(3000, () => {
       textoFase.destroy();
     });
   }
