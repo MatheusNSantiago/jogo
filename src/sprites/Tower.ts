@@ -1,6 +1,5 @@
 import GameScene from "../scenes/GameScene";
 import Enemy from "./Enemy";
-import TowerUpgrade from "./gui/TowerUpgrade";
 
 export interface TowerConfig {
   type: "archer" | "castle" | "knight-post";
