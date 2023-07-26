@@ -1,3 +1,4 @@
+import { PATH_LEVEL_1, PATH_LEVEL_2 } from "../constants";
 import GameScene from "../scenes/GameScene";
 import { useAnimation } from "../utils";
 import Barrier from "./Barrier";
@@ -188,7 +189,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
 
     const path = new Phaser.Curves.Path(points[0].x, points[0].y);
     for (const { x, y } of points.slice(1)) path.lineTo(x, y);
-
+    
     return path;
   }
 
