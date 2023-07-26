@@ -1,6 +1,18 @@
+import { globalEvents } from "../utils";
+
 class LevelCompleteScene extends Phaser.Scene {
+  private torresUsadas: number = 9;
+  private hp: number = 100;
+  private gold: number = 2;
+
   constructor() {
     super({ key: "LevelCompleteScene" });
+
+    globalEvents.on("level-complete", ({ torresUsadas, hp, gold }: any) => {
+      this.torresUsadas = torresUsadas;
+      this.hp = hp;
+      this.gold = gold;
+    });
   }
 
   create() {
@@ -49,10 +61,7 @@ class LevelCompleteScene extends Phaser.Scene {
   }
 
   playerScore(x: number, y: number) {
-    const vida = 80;
-    const gold = 50;
-    const torres = 8;
-    const score = vida + gold - torres;
+    const score = this.hp + this.gold - this.torresUsadas;
     const divWidth = 600;
     const divX = x - 40;
     const leftTextX = x;
@@ -64,17 +73,21 @@ class LevelCompleteScene extends Phaser.Scene {
     this.div(divX, y + 62, divWidth, 220);
 
     this.text("Vida:", leftTextX, y + 120);
-    this.text(vida.toString(), rightTextX, y + 120);
+    this.text(this.hp.toString(), rightTextX, y + 120);
 
     this.text("Gold:", leftTextX, y + 175);
-    this.text(gold.toString(), rightTextX, y + 175);
+    this.text(this.gold.toString(), rightTextX, y + 175);
 
     this.text("Torres:", leftTextX, y + 230);
-    this.text(torres.toString(), rightTextX, y + 230);
+    this.text(this.torresUsadas.toString(), rightTextX, y + 230);
 
     this.div(divX, y + 285, divWidth, 60);
 
-    this.text(`Total: (${vida}+${gold}-${torres})`, leftTextX, y + 317);
+    this.text(
+      `Total: (${this.hp}+${this.gold}-${this.torresUsadas})`,
+      leftTextX,
+      y + 317
+    );
     this.text(score.toString(), rightTextX, y + 317);
   }
 
