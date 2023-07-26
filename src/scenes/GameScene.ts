@@ -2,13 +2,12 @@ import {
   PATH_LEVEL_1,
   skeleton1,
   skeleton2,
-  skeleton3,
   ork1,
   ork2,
   golem,
   ork3,
-  ARCHER_TOWER,
 } from "../constants";
+
 import Barrier from "../sprites/Barrier";
 import Enemy from "../sprites/Enemy";
 import Tower from "../sprites/Tower";

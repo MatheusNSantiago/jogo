@@ -1,9 +1,9 @@
-import * as Phaser from 'phaser';
-import GameScene from './scenes/GameScene';
-import { CANVAS_HEIGHT, CANVAS_WIDTH} from './constants';
-import GameOverScene from './scenes/GameOverScene';
-import BootScene from './scenes/BootScene';
-import LevelCompleteScene from './scenes/LevelCompleteScene';
+import * as Phaser from "phaser";
+import GameScene from "./scenes/GameScene";
+import { CANVAS_HEIGHT, CANVAS_WIDTH } from "./constants";
+import GameOverScene from "./scenes/GameOverScene";
+import BootScene from "./scenes/BootScene";
+import LevelCompleteScene from "./scenes/LevelCompleteScene";
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -11,8 +11,11 @@ const config: Phaser.Types.Core.GameConfig = {
   width: CANVAS_WIDTH,
   fps: { limit: 25 },
   transparent: true,
+  dom: {
+    createContainer: true,
+  },
   scale: {
-    parent: 'game',
+    parent: "game",
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
@@ -20,4 +23,3 @@ const config: Phaser.Types.Core.GameConfig = {
 };
 
 new Phaser.Game(config);
-
