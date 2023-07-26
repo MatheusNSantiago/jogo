@@ -1,6 +1,5 @@
 import GameScene from "../scenes/GameScene";
 import Enemy from "./Enemy";
-import TowerUpgrade from "./gui/TowerUpgrade";
 
 export interface TowerConfig {
   type: "archer" | "castle" | "knight-post";
@@ -157,30 +156,36 @@ export default class Tower extends Phaser.GameObjects.Image {
     towerConfig: TowerConfig
   ) {
     var tower: Tower;
-    button.on("dragstart", ({ x, y }: Phaser.Input.Pointer) => {
-      tower = new Tower(scene, x, y, towerConfig);
-      tower.setInteractive({ cursor: "grabbing" });
-      scene.input.setDraggable(tower);
-    });
-    button.on("drag", ({ x, y }: Phaser.Input.Pointer) => {
-      if (scene.isMouseOnTopOfPath(x, y)) {
-        scene.input.setDefaultCursor("not-allowed");
-      } else {
-        scene.input.setDefaultCursor("grabbing");
-      }
 
-      tower.setPosition(x, y);
-      tower.update();
-    });
-    button.on("dragend", ({ x, y }: Phaser.Input.Pointer) => {
-      scene.input.setDefaultCursor("default");
+    button
+      .on("dragstart", ({ x, y }: Phaser.Input.Pointer) => {
+        tower = new Tower(scene, x, y, towerConfig);
+        tower.setInteractive({ cursor: "grabbing" });
+        scene.input.setDraggable(tower);
+      })
+      .on("drag", ({ x, y }: Phaser.Input.Pointer) => {
+        if (scene.isMouseOnTopOfPath(x, y) || scene.isMouseOnTopOfTower(x, y)) {
+          scene.input.setDefaultCursor("not-allowed");
+        } else {
+          scene.input.setDefaultCursor("grabbing");
+        }
 
-      if (scene.isMouseOnTopOfPath(x, y) || scene.gold < tower.cost)
-        return tower.dispose();
+        tower.setPosition(x, y);
+        tower.update();
+      })
+      .on("dragend", ({ x, y }: Phaser.Input.Pointer) => {
+        scene.input.setDefaultCursor("default");
 
-      tower.enable();
-      scene.towers.push(tower);
-      scene.subtractGold(tower.cost);
-    });
+        if (
+          scene.isMouseOnTopOfPath(x, y) ||
+          scene.isMouseOnTopOfTower(x, y) ||
+          scene.gold < tower.cost
+        )
+          return tower.dispose();
+
+        tower.enable();
+        scene.towers.push(tower);
+        scene.subtractGold(tower.cost);
+      });
   }
 }
