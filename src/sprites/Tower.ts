@@ -1,9 +1,9 @@
-import GameScene from '../scenes/GameScene';
-import Enemy from './Enemy';
-import TowerUpgrade from './gui/TowerUpgrade';
+import GameScene from "../scenes/GameScene";
+import Enemy from "./Enemy";
+import TowerUpgrade from "./gui/TowerUpgrade";
 
 export interface TowerConfig {
-  type: 'archer' | 'castle' | 'knight-post';
+  type: "archer" | "castle" | "knight-post";
   range: number;
   damage: number;
   cost: number;
@@ -21,11 +21,33 @@ export default class Tower extends Phaser.GameObjects.Image {
   target?: Enemy;
 
   constructor(scene: GameScene, x: number, y: number, config: TowerConfig) {
-    super(scene, x, y, 'towers', `${config.type}-tower-front.png`);
+    super(scene, x, y, "towers", `${config.type}-tower-front.png`);
     this.radius = config.range;
     this.damage = config.damage;
     this.cost = config.cost;
-    this.towerUpgradePopup = new TowerUpgrade(scene);
+    this.towerUpgradePopup = new TowerUpgrade(
+      scene,
+      {
+        label: "X2\nDano",
+        cost: 100,
+        onPointerDown: () => console.log("top left"),
+      },
+      {
+        label: "X1.5\nAlcance",
+        cost: 100,
+        onPointerDown: () => console.log("top right"),
+      },
+      {
+        label: "Upgrade",
+        cost: 100,
+        onPointerDown: () => console.log("bottom left"),
+      },
+      {
+        label: "Upgrade",
+        cost: 100,
+        onPointerDown: () => console.log("bottom right"),
+      }
+    );
 
     this.scene.add.existing(this);
     this.setActive(false);
@@ -38,15 +60,15 @@ export default class Tower extends Phaser.GameObjects.Image {
       .circle(this.x, this.y, this.radius, 0x1a73e8, 0.3)
       .setDepth(99);
 
-    this.on('pointerover', () => this.radiusArc.setVisible(true));
-    this.on('pointerout', () => this.radiusArc.setVisible(false));
-    this.on('pointerdown', () => this.towerUpgradePopup.setVisible(true));
+    this.on("pointerover", () => this.radiusArc.setVisible(true));
+    this.on("pointerout", () => this.radiusArc.setVisible(false));
+    this.on("pointerdown", () => this.towerUpgradePopup.setVisible(true));
   }
 
   enable() {
     this.setActive(true);
     this.radiusArc.setVisible(false);
-    this.input!.cursor = 'pointer';
+    this.input!.cursor = "pointer";
   }
 
   update() {
@@ -102,14 +124,14 @@ export default class Tower extends Phaser.GameObjects.Image {
           targets: this.missile,
           x: this.target.x,
           y: this.target.y,
-          ease: 'Linear',
+          ease: "Linear",
           duration: 300,
           onComplete: () => {
             this.missile.setVisible(false);
             if (this.target == undefined) return;
             this.target.hurt(this.damage);
             if (this.target.isDead()) {
-              this.scene.events.emit('enemy-killed', this.target);
+              this.scene.events.emit("enemy-killed", this.target);
               this.target = undefined;
             }
           },
@@ -135,23 +157,23 @@ export default class Tower extends Phaser.GameObjects.Image {
     towerConfig: TowerConfig
   ) {
     var tower: Tower;
-    button.on('dragstart', ({ x, y }: Phaser.Input.Pointer) => {
+    button.on("dragstart", ({ x, y }: Phaser.Input.Pointer) => {
       tower = new Tower(scene, x, y, towerConfig);
-      tower.setInteractive({ cursor: 'grabbing' });
+      tower.setInteractive({ cursor: "grabbing" });
       scene.input.setDraggable(tower);
     });
-    button.on('drag', ({ x, y }: Phaser.Input.Pointer) => {
+    button.on("drag", ({ x, y }: Phaser.Input.Pointer) => {
       if (scene.isMouseOnTopOfPath(x, y)) {
-        scene.input.setDefaultCursor('not-allowed');
+        scene.input.setDefaultCursor("not-allowed");
       } else {
-        scene.input.setDefaultCursor('grabbing');
+        scene.input.setDefaultCursor("grabbing");
       }
 
       tower.setPosition(x, y);
       tower.update();
     });
-    button.on('dragend', ({ x, y }: Phaser.Input.Pointer) => {
-      scene.input.setDefaultCursor('default');
+    button.on("dragend", ({ x, y }: Phaser.Input.Pointer) => {
+      scene.input.setDefaultCursor("default");
 
       if (scene.isMouseOnTopOfPath(x, y) || scene.gold < tower.cost)
         return tower.dispose();
