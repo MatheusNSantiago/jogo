@@ -12,7 +12,6 @@ export default class Tower extends Phaser.GameObjects.Image {
   declare scene: GameScene;
   missile: Phaser.GameObjects.Arc;
   radiusArc: Phaser.GameObjects.Arc;
-  towerUpgradePopup: TowerUpgrade;
   radius: number;
   damage = 20;
   cost: number;
@@ -24,30 +23,6 @@ export default class Tower extends Phaser.GameObjects.Image {
     this.radius = config.range;
     this.damage = config.damage;
     this.cost = config.cost;
-    this.towerUpgradePopup = new TowerUpgrade(
-      scene,
-      {
-        label: "X2\nDano",
-        cost: 100,
-        onPointerDown: () => console.log("top left"),
-      },
-      {
-        label: "X1.5\nAlcance",
-        cost: 100,
-        onPointerDown: () => console.log("top right"),
-      },
-      {
-        label: "Upgrade",
-        cost: 100,
-        onPointerDown: () => console.log("bottom left"),
-      },
-      {
-        label: "Upgrade",
-        cost: 100,
-        onPointerDown: () => console.log("bottom right"),
-      }
-    );
-
     this.scene.add.existing(this);
     this.setActive(false);
 
@@ -61,7 +36,6 @@ export default class Tower extends Phaser.GameObjects.Image {
 
     this.on("pointerover", () => this.radiusArc.setVisible(true));
     this.on("pointerout", () => this.radiusArc.setVisible(false));
-    this.on("pointerdown", () => this.towerUpgradePopup.setVisible(true));
   }
 
   enable() {
@@ -73,7 +47,6 @@ export default class Tower extends Phaser.GameObjects.Image {
   update() {
     if (!this.active) {
       this.radiusArc.setPosition(this.x, this.y);
-      this.towerUpgradePopup.mover(this.x, this.y);
       return;
     }
 
