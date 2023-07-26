@@ -1,9 +1,12 @@
+import { API } from "../api";
 import { globalEvents } from "../utils";
 
 class LevelCompleteScene extends Phaser.Scene {
-  private torresUsadas: number = 9;
-  private hp: number = 100;
-  private gold: number = 2;
+  private torresUsadas!: number;
+  private hp!: number;
+  private gold!: number;
+  private rankings!: any[];
+  private _leaderboard!: Phaser.GameObjects.Group;
 
   constructor() {
     super({ key: "LevelCompleteScene" });
@@ -15,7 +18,7 @@ class LevelCompleteScene extends Phaser.Scene {
     });
   }
 
-  create() {
+  async create() {
     const cx = this.cameras.main.centerX;
 
     this.text("VOCÊ CONSEGUIU, PARABÉNS!!", cx, 150, {
@@ -25,39 +28,41 @@ class LevelCompleteScene extends Phaser.Scene {
     });
 
     this.playerScore(850, 283);
-
-    this.leaderboard(1650, 350);
-
     this.scoreForm(920, 720);
 
     this.button("Recomeçar", cx, 1200, () => this.scene.start("GameScene"), {
       fontSize: 80,
       padding: 35,
     });
+
+    this._leaderboard = await this.leaderboard(1650, 350);
   }
 
-  leaderboard(x: number, y: number) {
+  async leaderboard(x: number, y: number, ranking?: any[]) {
     const height = 580;
 
-    this.div(x, y - 67, 600, 65); // header
-    this.div(x, y, 600, height); // main
-    this.div(x, y, 80, height); // numeração
+    const group = this.add.group([
+      this.div(x, y - 67, 600, 65), // header
+      this.div(x, y, 600, height), // main
+      this.div(x, y, 80, height), // numeração
+      this.div(x + 480, y, 120, height), // pontuação
 
-    this.text("Leaderboard", x + 107, y - 30, { fontSize: 50 });
+      this.text("Leaderboard", x + 107, y - 30, { fontSize: 50 }),
+    ]);
 
-    for (let i = 1; i <= 10; i++) {
-      if (i < 10) {
-        this.text(i.toString(), x + 27, y - 10 + i * 55);
-        this.text(`nickname ${i}`, x + 107, y - 10 + i * 55);
-      } else {
-        this.text(i.toString(), x + 15, y - 10 + i * 55);
-        this.text(`nickname ${i}`, x + 107, y - 10 + i * 55);
-      }
+    if (!ranking) this.rankings = await API.getRankings();
+
+    for (let i = 1; i <= this.rankings.length; i++) {
+      let { nickname, score } = this.rankings[i - 1];
+
+      group.addMultiple([
+        this.text(i.toString(), x + (i < 10 ? 27 : 15), y - 10 + i * 55),
+        this.text(nickname, x + 107, y - 10 + i * 55),
+        this.text(score, x + 500, y - 10 + i * 55),
+      ]);
     }
-    this.div(x + 480, y, 120, height); // pontuação
-    for (let i = 1; i <= 10; i++) {
-      this.text((Math.random() * 220).toFixed(0), x + 500, y - 10 + i * 55);
-    }
+
+    return group;
   }
 
   playerScore(x: number, y: number) {
@@ -102,8 +107,26 @@ class LevelCompleteScene extends Phaser.Scene {
       "background-color: white; width: 300px; height: 50px; font: 48px Arial"
     );
 
-    this.button("Enviar", x, y + 180, () => {
-      console.log("Nickname: ", (nicknameInput.node as any)["value"]);
+    this.button("Enviar", x, y + 180, async () => {
+      let nickname = (nicknameInput.node as any)["value"];
+
+      const score = this.hp + this.gold - this.torresUsadas;
+
+      this.rankings.push({ nickname, score });
+      this.rankings.sort((a, b) => b.score - a.score);
+
+      this._leaderboard.destroy(true);
+      this.rankings = this.rankings.slice(0, 10);
+      this._leaderboard = await this.leaderboard(1650, 350, this.rankings)
+
+      if (nickname.length > 0) {
+        await API.postRanking({
+          nickname: nickname.slice(0, 13),
+          torresUsadas: this.torresUsadas,
+          gold: this.gold,
+          hp: this.hp,
+        });
+      }
     });
   }
 
