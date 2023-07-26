@@ -1,5 +1,6 @@
 {
-    "wave": [[
+    "wave": [
+        [
             {
                 "enemy": "skeleton1",
                 "cd": 8000
@@ -47,8 +48,8 @@
                 "cd": 1000
             },
             {
-            "enemy": "skeleton2",
-            "cd": 15000
+                "enemy": "skeleton2",
+                "cd": 15000
             }
         ],
         [
@@ -69,33 +70,35 @@
                 "cd": 6000
             }
         ],
-        [{
-            "enemy": "skeleton2",
-            "cd": 4000
-        },
-        {
-            "enemy": "skeleton1",
-            "cd": 500
-        },
-        {
-            "enemy": "skeleton1",
-            "cd": 500
-        },
-        {
-            "enemy": "skeleton2",
-            "cd": 500
-        },
-        {
-            "enemy": "skeleton3",
-            "cd": 1000
-        },
-        {
-            "enemy": "ork2",
-            "cd": 4000
-        },
-        {
-            "enemy": "golem",
-            "cd": 3000
-        }
-    ]]
+        [
+            {
+                "enemy": "skeleton2",
+                "cd": 4000
+            },
+            {
+                "enemy": "skeleton1",
+                "cd": 500
+            },
+            {
+                "enemy": "skeleton1",
+                "cd": 500
+            },
+            {
+                "enemy": "skeleton2",
+                "cd": 500
+            },
+            {
+                "enemy": "skeleton3",
+                "cd": 1000
+            },
+            {
+                "enemy": "ork2",
+                "cd": 4000
+            },
+            {
+                "enemy": "golem",
+                "cd": 3000
+            }
+        ]
+    ]
 }
