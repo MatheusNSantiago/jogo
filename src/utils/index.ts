@@ -37,7 +37,6 @@ export function useAnimation(
     repeat: opts.loop == undefined ? -1 : opts.loop ? -1 : 0,
   });
 
-
   return animation || scene.anims.get(key);
 }
 
@@ -49,3 +48,5 @@ export function loadAnimation(
   scene.load.multiatlas(key, `${folderPath}/${key}.json`, folderPath);
   scene.load.json(`${key}-json`, `${folderPath}/${key}.json`);
 }
+
+export const globalEvents = new Phaser.Events.EventEmitter();
