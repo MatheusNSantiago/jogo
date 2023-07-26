@@ -20,6 +20,7 @@ export type GameStateInfo = {
   health: number;
   gold: number;
   energy: number;
+  torresUsadas: number;
 };
 
 class GameScene extends Phaser.Scene {
@@ -34,6 +35,7 @@ class GameScene extends Phaser.Scene {
   public energy!: number;
   private HUD!: Hud;
   private waves!: any[];
+  private torresUsadasNoNivelAnterior!: number;
 
   constructor() {
     super('GameScene');
@@ -44,8 +46,11 @@ class GameScene extends Phaser.Scene {
     health = 100,
     gold = 100,
     energy = 0,
+    torresUsadas = 0,
   }: GameStateInfo) {
     this.level = level;
+    this.torresUsadasNoNivelAnterior = torresUsadas;
+
     this.enemies = [];
     this.towers = [];
     this.energy = energy;
@@ -53,9 +58,11 @@ class GameScene extends Phaser.Scene {
     this.health = health;
     this.HUD = new Hud(this);
 
-    this.path = this.generatePath(
-      level === 'level1' ? PATH_LEVEL_1 : PATH_LEVEL_2
-    );
+    if (level === 'level1') {
+      this.path = this.generatePath(PATH_LEVEL_1);
+    } else {
+      this.path = this.generatePath(PATH_LEVEL_2);
+    }
     this.waves = this.cache.json.get(`${level}-waves`)['wave'];
   }
 
@@ -83,30 +90,33 @@ class GameScene extends Phaser.Scene {
       if (this.health <= 0) this.scene.start('GameOverScene');
     });
 
-    this.time.delayedCall(3000, () => this.startWave(0)); // Começa a spawnar inimigos
+    this.faseAlert(this.level === 'level1' ? 'Nível 1' : 'Nível 2 ☠️');
+    this.time.delayedCall(4200, () => this.startWave(0)); // Começa a spawnar inimigos
     this.addEnergy(); // Começa a acrescentar energia
-
-    // ╭──────────────────────────────────────────────────────────╮
-    // │                          debug                           │
-    // ╰──────────────────────────────────────────────────────────╯
-    // this.health = 99999;
-    // this.gold = 9999;
-    // this.energy = 9999;
   }
 
   startWave(waveNumber: number) {
     const isLastWave = waveNumber === this.waves.length;
     if (isLastWave) {
-      globalEvents.emit('level-complete', {
-        torresUsadas: this.towers.length,
-        hp: this.health,
-        gold: this.gold,
-      });
-
-      return this.scene.start('LevelCompleteScene');
+      if (this.level === 'level2') {
+        globalEvents.emit('level-complete', {
+          torresUsadas: this.torresUsadasNoNivelAnterior + this.towers.length,
+          hp: this.health,
+          gold: this.gold,
+        });
+        return this.scene.start('LevelCompleteScene');
+      } else {
+        return this.scene.start('GameScene', {
+          level: 'level2',
+          health: 100,
+          gold: this.gold,
+          energy: this.energy,
+          torresUsadas: this.towers.length,
+        } as GameStateInfo);
+      }
     }
 
-    this.faseAlert('wave ' + (waveNumber + 1));
+    this.faseAlert('Horda ' + (waveNumber + 1));
     this.spawnEnemy(waveNumber);
   }
 

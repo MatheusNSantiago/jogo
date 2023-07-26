@@ -1,8 +1,7 @@
-import { PATH_LEVEL_1, PATH_LEVEL_2 } from "../constants";
-import GameScene from "../scenes/GameScene";
-import { useAnimation } from "../utils";
-import Barrier from "./Barrier";
-import HealthBar from "./HealthBar";
+import GameScene from '../scenes/GameScene';
+import { useAnimation } from '../utils';
+import Barrier from './Barrier';
+import HealthBar from './HealthBar';
 
 export interface EnemyConfig {
   texture: string;
@@ -21,7 +20,7 @@ export interface EnemyConfig {
 
 export default class Enemy extends Phaser.GameObjects.Sprite {
   declare scene: GameScene;
-  declare state: "walking" | "attacking" | "dying" | "dead";
+  declare state: 'walking' | 'attacking' | 'dying' | 'dead';
 
   textureID: string;
   path: Phaser.Curves.Path;
@@ -58,7 +57,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
       )
       .setScale(config.scale)
       // Os que foram criados primeiro ficam na frente
-      .setDepth(this.scene.maxQuantityOfEnemies - this.scene.enemies.length);
+      .setDepth(50 - this.scene.enemies.length);
 
     this.follower.startFollow({
       duration: (this.path.getLength() / this.velocity) * 1000,
@@ -82,7 +81,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   isDead() {
-    return this.state === "dead" || this.state === "dying" || !this.active;
+    return this.state === 'dead' || this.state === 'dying' || !this.active;
   }
 
   update() {
@@ -91,19 +90,31 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
       .equals(this.follower.pathVector);
 
     const enconteredABarrier = this.scene.barrier?.isCollidingWithEnemy(this);
-    if (enconteredABarrier && this.state !== "attacking") {
+    if (enconteredABarrier && this.state !== 'attacking') {
       this.target = this.scene.barrier;
       this.attack();
     }
 
-    // Se ele levar dano, mostra o hp
+    /* Se ele levar dano, mostra o hp */
     const hasTakenDamage = this.hp.value < this.hp.total;
     if (hasTakenDamage && !this.hp.visible) this.hp.setVisible(true);
 
     this.hp.draw(this.x, this.y);
     if (isPathCompleted) {
-      this.scene.events.emit("enemy-reached-end", this);
+      this.scene.events.emit('enemy-reached-end', this);
       return this.dispose();
+    }
+
+    /* Flipar a sprite se ele tiver andando para esquerda */
+    const posicaoAtual = this.follower.pathVector.x;
+    const posicaoAnterior = this.x;
+    const noiseProtection = 5; // Evita que ele flipe por conta do noise
+
+    const isGoingLeft = posicaoAnterior - posicaoAtual > noiseProtection;
+    if (isGoingLeft) {
+      this.follower.setFlipX(true);
+    } else {
+      this.follower.setFlipX(false);
     }
 
     this.setPosition(this.follower.x, this.follower.y);
@@ -111,30 +122,26 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   walk() {
-    if (this.state == "walking") return;
+    if (this.state == 'walking') return;
     this.follower.resumeFollow();
-    const animation = useAnimation(this.scene, "Walking", this.textureID, {
+    const animation = useAnimation(this.scene, 'Walking', this.textureID, {
       frameRate: this.config.frameRate,
     });
     this.follower.anims.play(animation);
-    this.state = "walking";
+    this.state = 'walking';
   }
 
   attack() {
     if (this.target === undefined || this.isDead()) return;
 
     // Começar animação de ataque
-    if (this.state !== "attacking") {
-      const animation = useAnimation(this.scene, "Attacking", this.textureID, {
+    if (this.state !== 'attacking') {
+      const animation = useAnimation(this.scene, 'Attacking', this.textureID, {
         frameRate: (this.config.frameRate ?? 18) * this.attackSpeed,
       });
       this.follower.play(animation);
       this.follower.pauseFollow();
-      this.state = "attacking";
-
-      // At every frame of the animation, set the position to
-      // this.follower.on('animationupdate', () => {
-      // });
+      this.state = 'attacking';
     }
 
     if (this.target.hp.isZero()) {
@@ -153,17 +160,17 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   die() {
-    if (this.state == "dying") return;
-    const animation = useAnimation(this.scene, "Dying", this.textureID, {
+    if (this.state == 'dying') return;
+    const animation = useAnimation(this.scene, 'Dying', this.textureID, {
       loop: false,
       frameRate: this.config.frameRate,
     });
     this.follower.anims.play(animation);
-    this.state = "dying";
+    this.state = 'dying';
 
     this.follower.pauseFollow();
-    this.follower.on("animationcomplete", () => {
-      this.state = "dead";
+    this.follower.on('animationcomplete', () => {
+      this.state = 'dead';
       this.dispose();
     });
   }
@@ -189,7 +196,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
 
     const path = new Phaser.Curves.Path(points[0].x, points[0].y);
     for (const { x, y } of points.slice(1)) path.lineTo(x, y);
-    
+
     return path;
   }
 
